@@ -17,6 +17,8 @@ namespace ComOwnerSpy
     {
         Thread _autoUpdateThread = null;
 
+        private static readonly int[] RowHeightValues = new int[] { 18, 20, 24, 32, 48 };
+
         public bntSetting()
         {
             InitializeComponent();
@@ -35,13 +37,11 @@ namespace ComOwnerSpy
             listPortTable.FullRowSelect = true;
             listPortTable.GridLines = true;
 
-            ImageList imgList = new ImageList();
-            imgList.ImageSize = new Size(1, 28);
-            listPortTable.SmallImageList = imgList;
+            comboBoxRowHeight.SelectedIndex = 2;
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            this.Size = new Size(800, 600);
+            this.Size = new Size(900, 675);
 
             Version appVer = new Version(Application.ProductVersion);
             this.Text = "COM Owner Spy (" + appVer.Major + "." + appVer.Minor + ")";
@@ -94,6 +94,8 @@ namespace ComOwnerSpy
 
         private void RefreshAll()
         {
+            DateTime timeBegin = DateTime.Now;
+
             string[] allNames = AppConfig.AllSuspectProcessNames;
             ComHandle.ResetDetectedFlag();
             foreach (string procSuspectName in allNames)
@@ -140,6 +142,11 @@ namespace ComOwnerSpy
                     }
                 }
             }
+
+            DateTime timeEnd = DateTime.Now;
+            TimeSpan timeConsume = timeEnd - timeBegin;
+            statusLabelRefreshTime.Text = string.Format("{0:D2}/{1:D2} {2:D2}:{3:D2}:{4:D2}", timeEnd.Month, timeEnd.Day, timeEnd.Hour, timeEnd.Minute, timeEnd.Second);
+            statusLabelRefreshConsumeTime.Text = timeConsume.TotalSeconds.ToString("0.0") + " Sec";
         }
 
         private void RunTask()
@@ -194,7 +201,7 @@ namespace ComOwnerSpy
         {
             groupTitleAction.Width = this.Width - 32;
             listPortTable.Width = this.Width - 32;
-            listPortTable.Height = this.Height - 52 - groupTitleAction.Height;
+            listPortTable.Height = this.Height - 48 - groupTitleAction.Height - theStatusBar.Height;
             listPortTable.Columns[listPortTable.Columns.Count - 1].Width = GetLastColumnWidth();
         }
 
@@ -262,6 +269,9 @@ namespace ComOwnerSpy
         private void btnJumpPort_Click(object sender, EventArgs e)
         {
             string jumpPort = comboBoxJumpPort.Text.Trim();
+            if (jumpPort.Length <= 0)
+                return;
+
             for (int i = 0; i < listPortTable.Items.Count; i++)
             {
                 ListViewItem item = listPortTable.Items[i];
@@ -273,9 +283,10 @@ namespace ComOwnerSpy
                     item.Focused = true;
                     item.EnsureVisible();
                     listPortTable.Select();
-                    break;
+                    return;
                 }
             }
+            MessageBox.Show(this, "Cannot find the port " + jumpPort + " to jump.", "Jump Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void menuRefreshPortInfo_Click(object sender, EventArgs e)
@@ -290,6 +301,13 @@ namespace ComOwnerSpy
             this.Enabled = false;
             RefreshAll();
             this.Enabled = true;
+        }
+
+        private void comboBoxRowHeight_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ImageList imgList = new ImageList();
+            imgList.ImageSize = new Size(1, RowHeightValues[comboBoxRowHeight.SelectedIndex]);
+            listPortTable.SmallImageList = imgList;
         }
     }
 }

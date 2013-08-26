@@ -12,6 +12,8 @@ namespace ComOwnerSpy
     {
         private static string[] _allSuspectProcessNames = new string[] { "SecureCRT", "ttermpro", "Multy-Term" };
         private static bool _flagOwnerWithDomain = true;
+        private static string[] _serialDeviceNamePatterns = new string[] { "\\Device\\Serial", "\\Device\\mxuport" };
+        private static int _minSerialDeviceNamePatternLength = Math.Min("\\Device\\Serial".Length, "\\Device\\mxuport".Length);
 
         public static void Init()
         {
@@ -21,6 +23,29 @@ namespace ComOwnerSpy
                 item.Port = i.ToString();
                 ComHandle.Add(item);
             }
+        }
+
+        public static string[] SerialDeviceNamePatterns
+        {
+            get { return _serialDeviceNamePatterns; }
+            set 
+            {
+                if (value == null)
+                    return;
+                _serialDeviceNamePatterns = value;
+                int minLen = 0xffffff;
+                foreach (string name in _serialDeviceNamePatterns)
+                {
+                    if (name.Length < minLen)
+                        minLen = name.Length;
+                }
+                _minSerialDeviceNamePatternLength = minLen;
+            }
+        }
+
+        public static int MinSerialDeviceNamePatternLength
+        {
+            get { return _minSerialDeviceNamePatternLength; }
         }
 
         public static bool OwnerWithDomain
@@ -91,6 +116,11 @@ namespace ComOwnerSpy
                     string[] names = line.Substring("SuspectProcessNames:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     _allSuspectProcessNames = names;
                 }
+                else if (line.StartsWith("SerialDeviceNamePatterns:"))
+                {
+                    string[] names = line.Substring("SerialDeviceNamePatterns:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    _serialDeviceNamePatterns = names;
+                }
                 else if (line.StartsWith("#End Data#"))
                     break; //end of config file
             }
@@ -109,6 +139,7 @@ namespace ComOwnerSpy
             writer.WriteLine("Version:" + Application.ProductVersion);
             writer.WriteLine("Ports:" + string.Join(",", ComHandle.GetAllPorts()));
             writer.WriteLine("SuspectProcessNames:" + string.Join(",", _allSuspectProcessNames));
+            writer.WriteLine("SerialDeviceNamePatterns:" + string.Join(",", _serialDeviceNamePatterns));
             writer.WriteLine("#End Data#");
             writer.Flush();
             writer.Close();

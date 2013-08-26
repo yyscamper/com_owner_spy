@@ -10,9 +10,6 @@ namespace ComOwnerSpy
     public class ProcessFileHandle
     {
         int _procId = -1;
-        private static readonly string  SERIAL_DEVICE_PATTERN1 = "\\Device\\VSerial";
-        private static readonly string  SERIAL_DEVICE_PATTERN2 = "\\Device\\mxuport";
-
         public ProcessFileHandle(int procId)
         {
             _procId = procId;
@@ -22,32 +19,24 @@ namespace ComOwnerSpy
         {
             ArrayList handleList = new ArrayList();
             int startIndex = 0;
-            int idx1 = 0;
-            int idx2 = 0;
+            int idx = 0;
             int lstart, lend;
-            int idxColon = 0;
-            int patternLen = ((SERIAL_DEVICE_PATTERN1.Length < SERIAL_DEVICE_PATTERN2.Length) ?
-                                SERIAL_DEVICE_PATTERN1.Length : SERIAL_DEVICE_PATTERN2.Length);
+            int patternLen = AppConfig.MinSerialDeviceNamePatternLength;
+            string[] allPatterns = AppConfig.SerialDeviceNamePatterns;
 
             while (startIndex < strCmd.Length)
             {
-                idx1 = strCmd.IndexOf(SERIAL_DEVICE_PATTERN1, startIndex);
-                idx2 = strCmd.IndexOf(SERIAL_DEVICE_PATTERN2, startIndex);
-
-                if (idx1 < 0)
+                lstart = 0xffffff;
+                foreach (string pattern in allPatterns)
                 {
-                    if (idx2 < 0)
-                        break;
-                    else
-                        lstart = idx2;
+                    idx = strCmd.IndexOf(pattern, startIndex);
+                    if (idx >=0 && lstart > idx)
+                    {
+                        lstart = idx;
+                    }
                 }
-                else
-                {
-                    if (idx2 < 0)
-                        lstart = idx1;
-                    else
-                        lstart = ((idx1 < idx2) ? idx1 : idx2);
-                }
+                if (lstart == 0xffffff) //Don't find any patterns
+                    break;
 
                 lend = lstart + patternLen;
                 while (true) //find the end of line "\r\n"
