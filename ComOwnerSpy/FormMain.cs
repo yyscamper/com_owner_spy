@@ -224,11 +224,11 @@ namespace ComOwnerSpy
             if (proc == null)
                 return;
 
-            if (DialogResult.Yes == MessageBox.Show(this, "Are you sure want to kill the process (Name=" + proc.ProcessName + ",ID=" + proc.Id + ")?", 
-                "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            string msg = "Are you sure want to kill the process (Name=" + proc.ProcessName + ",ID=" + proc.Id + ")?";
+
+            if (DialogResult.Yes == yMessageBox.ShowConfirm(this, msg, "Confirm Kill Process"))
             {
-                if (DialogResult.Yes == MessageBox.Show(this, "Are you sure want to kill the process (Name=" + proc.ProcessName + ",ID=" + proc.Id + ")?",
-                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                if (DialogResult.Yes == yMessageBox.ShowConfirm(this, msg, "Confirm Kill Process"))
                 {
                     try
                     {
@@ -236,8 +236,8 @@ namespace ComOwnerSpy
                     }
                     catch (Exception err)
                     {
-                        MessageBox.Show(this, "Kill process error, error message:" + System.Environment.NewLine + err.Message,
-                            "Error", MessageBoxButtons.OK);
+                       yMessageBox.ShowError(this, "Kill process error, error message:" + System.Environment.NewLine + err.Message,
+                            "Error Kill Process");
                     }
                 }
             }
@@ -286,7 +286,7 @@ namespace ComOwnerSpy
                     return;
                 }
             }
-            MessageBox.Show(this, "Cannot find the port " + jumpPort + " to jump.", "Jump Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            yMessageBox.ShowError(this, "Cannot find the port " + jumpPort + " to jump.", "Jump Error");
         }
 
         private void menuRefreshPortInfo_Click(object sender, EventArgs e)

@@ -106,8 +106,9 @@ namespace ComOwnerSpy
 
         private void btnPortsRangeAdd_Click(object sender, EventArgs e)
         {
-            if (DialogResult.Yes != MessageBox.Show("Are you sure want to initialize the COM ports? The removed ports list will be cleared!",
-                  "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            if (DialogResult.Yes != yMessageBox.ShowConfirm(this,
+                "Are you sure want to initialize the COM ports? The removed ports list will be cleared!",
+                "Confirm Init Ports"))
             {
                 return;
             }
@@ -132,13 +133,13 @@ namespace ComOwnerSpy
             }
             catch
             {
-                MessageBox.Show("Invalid port number!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                yMessageBox.ShowError(this, "Invalid port number!", "Error");
                 return;
             }
 
             if (m_selectedPorts.Contains(port))
             {
-                MessageBox.Show("The port " + port + " has already in the list!", "Add Port Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                yMessageBox.ShowInfo(this, "The port " + port + " has already in the list!", "Add Port Information");
                 return;
             }
 

@@ -22,7 +22,7 @@ namespace ComOwnerSpy
                 string mapFilePath = System.Environment.CurrentDirectory + "\\config\\serial_devices.map";
                 if (!System.IO.File.Exists(mapFilePath))
                 {
-                    MessageBox.Show("Cannot find the file \"" + mapFilePath + "\", this is must for ComOwnerSpy to run, please copy one to that directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    yMessageBox.ShowError(null, "Cannot find the file \"" + mapFilePath + "\", this is must for ComOwnerSpy to run, please copy one to that directory.");
                     return;
                 }
                 DeviceMapTable.Load("config\\serial_devices.map");
