@@ -37,12 +37,9 @@
             this.checkBoxAutoRefresh = new System.Windows.Forms.CheckBox();
             this.btnPortsSetting = new System.Windows.Forms.Button();
             this.groupTitleAction = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBoxRowHeight = new System.Windows.Forms.ComboBox();
             this.comboBoxJumpPort = new System.Windows.Forms.ComboBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnJumpPort = new System.Windows.Forms.Button();
-            this.btnSetting = new System.Windows.Forms.Button();
             this.theStatusBar = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelRefreshTime = new System.Windows.Forms.ToolStripStatusLabel();
@@ -70,31 +67,30 @@
             this.menuRefresh,
             this.menuKill});
             this.ctxMenuPortsTable.Name = "ctxMenuPortsTable";
-            this.ctxMenuPortsTable.Size = new System.Drawing.Size(113, 48);
+            this.ctxMenuPortsTable.Size = new System.Drawing.Size(121, 48);
             this.ctxMenuPortsTable.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuPortsTable_Opening);
             // 
             // menuRefresh
             // 
             this.menuRefresh.Name = "menuRefresh";
-            this.menuRefresh.Size = new System.Drawing.Size(112, 22);
+            this.menuRefresh.Size = new System.Drawing.Size(120, 22);
             this.menuRefresh.Text = "Refresh";
             this.menuRefresh.Click += new System.EventHandler(this.menuRefreshPortInfo_Click);
             // 
             // menuKill
             // 
             this.menuKill.BackColor = System.Drawing.Color.Red;
-            this.menuKill.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.menuKill.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.menuKill.ForeColor = System.Drawing.Color.White;
             this.menuKill.Name = "menuKill";
-            this.menuKill.Size = new System.Drawing.Size(112, 22);
+            this.menuKill.Size = new System.Drawing.Size(120, 22);
             this.menuKill.Text = "Kill";
             this.menuKill.Click += new System.EventHandler(this.menuKill_Click);
             // 
             // checkBoxAutoRefresh
             // 
-            this.checkBoxAutoRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxAutoRefresh.AutoSize = true;
-            this.checkBoxAutoRefresh.Location = new System.Drawing.Point(607, 19);
+            this.checkBoxAutoRefresh.Location = new System.Drawing.Point(10, 19);
             this.checkBoxAutoRefresh.Name = "checkBoxAutoRefresh";
             this.checkBoxAutoRefresh.Size = new System.Drawing.Size(102, 21);
             this.checkBoxAutoRefresh.TabIndex = 4;
@@ -104,70 +100,43 @@
             // 
             // btnPortsSetting
             // 
-            this.btnPortsSetting.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnPortsSetting.Location = new System.Drawing.Point(6, 14);
+            this.btnPortsSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPortsSetting.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnPortsSetting.Location = new System.Drawing.Point(715, 14);
             this.btnPortsSetting.Name = "btnPortsSetting";
             this.btnPortsSetting.Size = new System.Drawing.Size(64, 32);
             this.btnPortsSetting.TabIndex = 0;
-            this.btnPortsSetting.Text = "Ports";
+            this.btnPortsSetting.Text = "Setting";
             this.btnPortsSetting.UseVisualStyleBackColor = true;
             this.btnPortsSetting.Click += new System.EventHandler(this.btnPortsSetting_Click);
             // 
             // groupTitleAction
             // 
-            this.groupTitleAction.Controls.Add(this.label1);
-            this.groupTitleAction.Controls.Add(this.comboBoxRowHeight);
             this.groupTitleAction.Controls.Add(this.comboBoxJumpPort);
             this.groupTitleAction.Controls.Add(this.btnRefresh);
             this.groupTitleAction.Controls.Add(this.btnJumpPort);
             this.groupTitleAction.Controls.Add(this.checkBoxAutoRefresh);
-            this.groupTitleAction.Controls.Add(this.btnSetting);
             this.groupTitleAction.Controls.Add(this.btnPortsSetting);
-            this.groupTitleAction.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupTitleAction.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupTitleAction.Location = new System.Drawing.Point(6, 2);
             this.groupTitleAction.Name = "groupTitleAction";
             this.groupTitleAction.Size = new System.Drawing.Size(785, 52);
             this.groupTitleAction.TabIndex = 3;
             this.groupTitleAction.TabStop = false;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(331, 21);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 17);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Row Height:";
-            // 
-            // comboBoxRowHeight
-            // 
-            this.comboBoxRowHeight.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxRowHeight.FormattingEnabled = true;
-            this.comboBoxRowHeight.Items.AddRange(new object[] {
-            "Very Low",
-            "Low",
-            "Normal",
-            "High",
-            "Very High"});
-            this.comboBoxRowHeight.Location = new System.Drawing.Point(410, 18);
-            this.comboBoxRowHeight.Name = "comboBoxRowHeight";
-            this.comboBoxRowHeight.Size = new System.Drawing.Size(89, 25);
-            this.comboBoxRowHeight.TabIndex = 6;
-            this.comboBoxRowHeight.SelectedIndexChanged += new System.EventHandler(this.comboBoxRowHeight_SelectedIndexChanged);
-            // 
             // comboBoxJumpPort
             // 
             this.comboBoxJumpPort.FormattingEnabled = true;
-            this.comboBoxJumpPort.Location = new System.Drawing.Point(167, 17);
+            this.comboBoxJumpPort.Location = new System.Drawing.Point(208, 17);
             this.comboBoxJumpPort.Name = "comboBoxJumpPort";
             this.comboBoxJumpPort.Size = new System.Drawing.Size(80, 25);
             this.comboBoxJumpPort.TabIndex = 5;
+            this.comboBoxJumpPort.SelectedIndexChanged += new System.EventHandler(this.comboBoxJumpPort_SelectedIndexChanged);
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnRefresh.Location = new System.Drawing.Point(715, 14);
+            this.btnRefresh.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnRefresh.Location = new System.Drawing.Point(111, 12);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(64, 32);
             this.btnRefresh.TabIndex = 1;
@@ -177,25 +146,14 @@
             // 
             // btnJumpPort
             // 
-            this.btnJumpPort.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnJumpPort.Location = new System.Drawing.Point(252, 14);
+            this.btnJumpPort.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnJumpPort.Location = new System.Drawing.Point(293, 14);
             this.btnJumpPort.Name = "btnJumpPort";
             this.btnJumpPort.Size = new System.Drawing.Size(64, 32);
             this.btnJumpPort.TabIndex = 1;
             this.btnJumpPort.Text = "Jump";
             this.btnJumpPort.UseVisualStyleBackColor = true;
             this.btnJumpPort.Click += new System.EventHandler(this.btnJumpPort_Click);
-            // 
-            // btnSetting
-            // 
-            this.btnSetting.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSetting.Location = new System.Drawing.Point(79, 14);
-            this.btnSetting.Name = "btnSetting";
-            this.btnSetting.Size = new System.Drawing.Size(64, 32);
-            this.btnSetting.TabIndex = 1;
-            this.btnSetting.Text = "Options";
-            this.btnSetting.UseVisualStyleBackColor = true;
-            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
             // theStatusBar
             // 
@@ -219,7 +177,7 @@
             // statusLabelRefreshTime
             // 
             this.statusLabelRefreshTime.Name = "statusLabelRefreshTime";
-            this.statusLabelRefreshTime.Size = new System.Drawing.Size(72, 17);
+            this.statusLabelRefreshTime.Size = new System.Drawing.Size(83, 17);
             this.statusLabelRefreshTime.Text = "??/?? ??:??:??";
             // 
             // toolStripStatusLabel3
@@ -232,7 +190,7 @@
             // statusLabelRefreshConsumeTime
             // 
             this.statusLabelRefreshConsumeTime.Name = "statusLabelRefreshConsumeTime";
-            this.statusLabelRefreshConsumeTime.Size = new System.Drawing.Size(40, 17);
+            this.statusLabelRefreshConsumeTime.Size = new System.Drawing.Size(46, 17);
             this.statusLabelRefreshConsumeTime.Text = "?.? sec";
             // 
             // bntSetting
@@ -243,7 +201,7 @@
             this.Controls.Add(this.theStatusBar);
             this.Controls.Add(this.groupTitleAction);
             this.Controls.Add(this.listPortTable);
-            this.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "bntSetting";
@@ -267,15 +225,12 @@
         private System.Windows.Forms.CheckBox checkBoxAutoRefresh;
         private System.Windows.Forms.Button btnPortsSetting;
         private System.Windows.Forms.GroupBox groupTitleAction;
-        private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.ContextMenuStrip ctxMenuPortsTable;
         private System.Windows.Forms.ToolStripMenuItem menuKill;
         private System.Windows.Forms.ComboBox comboBoxJumpPort;
         private System.Windows.Forms.Button btnJumpPort;
         private System.Windows.Forms.ToolStripMenuItem menuRefresh;
         private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBoxRowHeight;
         private System.Windows.Forms.StatusStrip theStatusBar;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelRefreshTime;

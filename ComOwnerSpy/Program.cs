@@ -19,7 +19,7 @@ namespace ComOwnerSpy
 
             try
             {
-                string mapFilePath = System.Environment.CurrentDirectory + "\\config\\serial_devices.map";
+                string mapFilePath = AppConfig.DeviceMapFilePath;
                 if (!System.IO.File.Exists(mapFilePath))
                 {
                     yMessageBox.ShowError(null, "Cannot find the file \"" + mapFilePath + "\", this is must for ComOwnerSpy to run, please copy one to that directory.");

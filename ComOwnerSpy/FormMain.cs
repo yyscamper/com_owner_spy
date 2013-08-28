@@ -13,11 +13,9 @@ using System.Windows.Forms;
 
 namespace ComOwnerSpy
 {
-    public partial class bntSetting : Form
+    public partial class bntSetting : Form, IGeneralEvent
     {
         Thread _autoUpdateThread = null;
-
-        private static readonly int[] RowHeightValues = new int[] { 18, 20, 24, 32, 48 };
 
         public bntSetting()
         {
@@ -37,7 +35,7 @@ namespace ComOwnerSpy
             listPortTable.FullRowSelect = true;
             listPortTable.GridLines = true;
 
-            comboBoxRowHeight.SelectedIndex = 2;
+            UpdateRowHeight(24);
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
@@ -188,7 +186,8 @@ namespace ComOwnerSpy
                 _autoUpdateThread.Abort();
 
             ComHandle.ModifyFlag = false;
-            new FormSelectPorts().ShowDialog(this);
+            //new FormSelectPorts().ShowDialog(this);
+            new FormSetting(this).ShowDialog(this);
             if (ComHandle.ModifyFlag)
                 CreateRows();
 
@@ -305,9 +304,21 @@ namespace ComOwnerSpy
 
         private void comboBoxRowHeight_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
+        }
+
+        public void UpdateRowHeight(int rowHeight)
+        {
             ImageList imgList = new ImageList();
-            imgList.ImageSize = new Size(1, RowHeightValues[comboBoxRowHeight.SelectedIndex]);
+            imgList.ImageSize = new Size(1, rowHeight);
             listPortTable.SmallImageList = imgList;
+
+            AppConfig.RowHeight = rowHeight;
+        }
+
+        private void comboBoxJumpPort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnJumpPort.PerformClick();
         }
     }
 }

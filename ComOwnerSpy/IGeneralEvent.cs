@@ -1,13 +1,12 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace ComOwnerSpy
 {
-    public interface IProgressEvent
+    public interface IGeneralEvent
     {
-        void ProgressUpdate(string msg);
+        void UpdateRowHeight(int rowHeight);
     }
 }

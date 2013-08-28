@@ -20,7 +20,32 @@ namespace ComOwnerSpy
             _tblPortDevice = new Dictionary<string, string>();
         }
 
-        static IProgressEvent ProgressEvent
+        public static Dictionary<string, string> RawTable
+        {
+            get { return _tblPortDevice; }
+        }
+
+        public static bool ContainsDeviceName(string devName)
+        {
+            return _tblDevicePort.ContainsKey(devName) || _tblPortDevice.ContainsValue(devName);
+        }
+
+        public static bool ContainsPort(string port)
+        {
+            return _tblPortDevice.ContainsKey(port) || _tblDevicePort.ContainsValue(port);
+        }
+
+        public static void Remove(string port)
+        {
+            if (_tblPortDevice.ContainsKey(port))
+            {        
+                string devName = _tblPortDevice[port];
+                _tblPortDevice.Remove(port);
+                _tblDevicePort.Remove(devName);
+            }
+        }
+
+        static public IProgressEvent ProgressEvent
         {
             get { return _progressHandle; }
             set { _progressHandle = value; }
@@ -100,20 +125,17 @@ namespace ComOwnerSpy
             }
         }
 
-        public static void BuildTable(ArrayList allPorts, ref ArrayList errorPortsInfo)
+        public static void BuildTable(string[] allPorts, ref ArrayList errorPortsInfo)
         {
             ArrayList errPorts = new ArrayList();
 
             if (_progressHandle != null)
-            {
-                _progressHandle.ProgressSet(0, allPorts.Count);
-                _progressHandle.ProgressUpdate(0);
-            }
+                _progressHandle.ProgressUpdate("0/" + allPorts.Length);
 
             ProcessFileHandle proc = new ProcessFileHandle(System.Diagnostics.Process.GetCurrentProcess().Id);
             Clear();
 
-            for (int i = 0; i < allPorts.Count; i++)
+            for (int i = 0; i < allPorts.Length; i++)
             {
                 string port = (string)allPorts[i];
                 try
@@ -140,13 +162,13 @@ namespace ComOwnerSpy
                 finally
                 {
                     if (_progressHandle != null)
-                        _progressHandle.ProgressUpdate(i + 1);
+                        _progressHandle.ProgressUpdate(i.ToString() + "/" + allPorts.Length);
                 }
             }
             errorPortsInfo = errPorts;
         }
 
-        public static void BuildTableFile(string path, ArrayList allPorts, ref ArrayList errorPortsInfo)
+        public static void BuildTableFile(string path, string[] allPorts, ref ArrayList errorPortsInfo)
         {
             StreamWriter sw = new StreamWriter(path);
             BuildTable(allPorts, ref errorPortsInfo);
