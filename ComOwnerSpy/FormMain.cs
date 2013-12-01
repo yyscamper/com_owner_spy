@@ -13,11 +13,11 @@ using System.Windows.Forms;
 
 namespace ComOwnerSpy
 {
-    public partial class bntSetting : Form, IGeneralEvent
+    public partial class FormMain : Form, IGeneralEvent
     {
         Thread _autoUpdateThread = null;
 
-        public bntSetting()
+        public FormMain()
         {
             InitializeComponent();
 
@@ -57,7 +57,9 @@ namespace ComOwnerSpy
         private void FormMain_Load(object sender, EventArgs e)
         {
             CreateRows();
-            checkBoxAutoRefresh.Checked = true;
+            checkBoxAutoRefresh.Checked = AppConfig.EnableAutoRefreshAtStartup;
+
+            RefreshAll(); //Always performs a refresh all while boot up
         }
 
         private void CreateRows()
@@ -84,7 +86,7 @@ namespace ComOwnerSpy
                 return;
 
             //listPortTable.BeginUpdate();
-            lvi.SubItems[1].Text = item.Owner;
+            lvi.SubItems[1].Text = item.OwnerShow;
             lvi.SubItems[2].Text = item.App;
             lvi.SubItems[3].Text = item.ProcessInfo;
             //listPortTable.EndUpdate();
@@ -149,11 +151,19 @@ namespace ComOwnerSpy
 
         private void RunTask()
         {
+            TimeSpan tspan;
             while (true)
             {
                 Application.DoEvents();
+
+                DateTime tnow = DateTime.Now;
                 RefreshAll();
-                System.Threading.Thread.Sleep(1000);
+
+                do
+                {
+                    tspan = DateTime.Now - tnow;
+                    System.Threading.Thread.Sleep(200);
+                } while (tspan.TotalSeconds < AppConfig.AutoRefreshInterval);
             }
         }
 
@@ -319,6 +329,18 @@ namespace ComOwnerSpy
         private void comboBoxJumpPort_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnJumpPort.PerformClick();
+        }
+
+        public void UpdateOwnerFormat(OwnerShowFormat fmt)
+        {
+            Dictionary<string, ComItem> allComs = ComHandle.AllComs;
+            foreach (ComItem item in allComs.Values)
+            {
+                if (item.GuiItem != null && item.Owner != string.Empty)
+                {
+                    item.GuiItem.SubItems[1].Text = item.OwnerShow;
+                }
+            }
         }
     }
 }

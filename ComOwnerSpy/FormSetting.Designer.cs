@@ -32,6 +32,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSetting));
             this.tabCtrlSetting = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.groupBoxRefreshSetting = new System.Windows.Forms.GroupBox();
+            this.cboxEnableAutoRefreshAtStartup = new System.Windows.Forms.CheckBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.upDownRefreshInterval = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.comboxBoxOwnerShowFormat = new System.Windows.Forms.ComboBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.comboBoxRowHeight = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.tabPageComPorts = new System.Windows.Forms.TabPage();
@@ -72,6 +79,23 @@
             this.listViewDeviceMapTable = new System.Windows.Forms.ListView();
             this.columnHeaderPort = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDeviceFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tabPageOwner = new System.Windows.Forms.TabPage();
+            this.btnDeleteOwnerTranslate = new System.Windows.Forms.Button();
+            this.btnAddNewOwnerTranslate = new System.Windows.Forms.Button();
+            this.groupOwnerTranslateInfo = new System.Windows.Forms.GroupBox();
+            this.tboxOwnerPhone = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.tboxOwnerShortName = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.tboxOwnerFullName = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.tboxDomainUser = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.listViewOwnerTranslate = new System.Windows.Forms.ListView();
+            this.columnHeaderDomainUser = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderFullName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderShortName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderPhone = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPageAbout = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -88,6 +112,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.tabCtrlSetting.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
+            this.groupBoxRefreshSetting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownRefreshInterval)).BeginInit();
             this.tabPageComPorts.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPortStart)).BeginInit();
@@ -96,6 +122,8 @@
             this.ctxMenuListBoxSuspectProcNames.SuspendLayout();
             this.tabPageDeviceMap.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPageOwner.SuspendLayout();
+            this.groupOwnerTranslateInfo.SuspendLayout();
             this.tabPageAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -106,6 +134,7 @@
             this.tabCtrlSetting.Controls.Add(this.tabPageComPorts);
             this.tabCtrlSetting.Controls.Add(this.tabPageSuspectProc);
             this.tabCtrlSetting.Controls.Add(this.tabPageDeviceMap);
+            this.tabCtrlSetting.Controls.Add(this.tabPageOwner);
             this.tabCtrlSetting.Controls.Add(this.tabPageAbout);
             this.tabCtrlSetting.Location = new System.Drawing.Point(10, 7);
             this.tabCtrlSetting.Name = "tabCtrlSetting";
@@ -115,6 +144,9 @@
             // 
             // tabPageGeneral
             // 
+            this.tabPageGeneral.Controls.Add(this.groupBoxRefreshSetting);
+            this.tabPageGeneral.Controls.Add(this.comboxBoxOwnerShowFormat);
+            this.tabPageGeneral.Controls.Add(this.label24);
             this.tabPageGeneral.Controls.Add(this.comboBoxRowHeight);
             this.tabPageGeneral.Controls.Add(this.label17);
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 26);
@@ -125,20 +157,93 @@
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
             // 
+            // groupBoxRefreshSetting
+            // 
+            this.groupBoxRefreshSetting.Controls.Add(this.cboxEnableAutoRefreshAtStartup);
+            this.groupBoxRefreshSetting.Controls.Add(this.label19);
+            this.groupBoxRefreshSetting.Controls.Add(this.upDownRefreshInterval);
+            this.groupBoxRefreshSetting.Controls.Add(this.label18);
+            this.groupBoxRefreshSetting.Location = new System.Drawing.Point(6, 1);
+            this.groupBoxRefreshSetting.Name = "groupBoxRefreshSetting";
+            this.groupBoxRefreshSetting.Size = new System.Drawing.Size(501, 81);
+            this.groupBoxRefreshSetting.TabIndex = 11;
+            this.groupBoxRefreshSetting.TabStop = false;
+            // 
+            // cboxEnableAutoRefreshAtStartup
+            // 
+            this.cboxEnableAutoRefreshAtStartup.AutoSize = true;
+            this.cboxEnableAutoRefreshAtStartup.Location = new System.Drawing.Point(13, 17);
+            this.cboxEnableAutoRefreshAtStartup.Name = "cboxEnableAutoRefreshAtStartup";
+            this.cboxEnableAutoRefreshAtStartup.Size = new System.Drawing.Size(206, 21);
+            this.cboxEnableAutoRefreshAtStartup.TabIndex = 0;
+            this.cboxEnableAutoRefreshAtStartup.Text = "Enable auto refresh at start-up";
+            this.cboxEnableAutoRefreshAtStartup.UseVisualStyleBackColor = true;
+            this.cboxEnableAutoRefreshAtStartup.CheckedChanged += new System.EventHandler(this.cboxEnableAutoRefreshAtStartup_CheckedChanged);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(170, 47);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(57, 17);
+            this.label19.TabIndex = 10;
+            this.label19.Text = "Seconds";
+            // 
+            // upDownRefreshInterval
+            // 
+            this.upDownRefreshInterval.Location = new System.Drawing.Point(117, 44);
+            this.upDownRefreshInterval.Name = "upDownRefreshInterval";
+            this.upDownRefreshInterval.Size = new System.Drawing.Size(52, 23);
+            this.upDownRefreshInterval.TabIndex = 1;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(12, 47);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(102, 17);
+            this.label18.TabIndex = 10;
+            this.label18.Text = "Refresh Interval:";
+            // 
+            // comboxBoxOwnerShowFormat
+            // 
+            this.comboxBoxOwnerShowFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboxBoxOwnerShowFormat.FormattingEnabled = true;
+            this.comboxBoxOwnerShowFormat.Items.AddRange(new object[] {
+            "Default",
+            "DomainUser",
+            "FullName",
+            "ShortName",
+            "Phone"});
+            this.comboxBoxOwnerShowFormat.Location = new System.Drawing.Point(103, 122);
+            this.comboxBoxOwnerShowFormat.Name = "comboxBoxOwnerShowFormat";
+            this.comboxBoxOwnerShowFormat.Size = new System.Drawing.Size(89, 25);
+            this.comboxBoxOwnerShowFormat.TabIndex = 1;
+            this.comboxBoxOwnerShowFormat.SelectedIndexChanged += new System.EventHandler(this.comboBoxOwnerShowFormat_SelectedIndexChanged);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(6, 126);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(94, 17);
+            this.label24.TabIndex = 0;
+            this.label24.Text = "Owner Format:";
+            // 
             // comboBoxRowHeight
             // 
             this.comboBoxRowHeight.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxRowHeight.FormattingEnabled = true;
-            this.comboBoxRowHeight.Location = new System.Drawing.Point(86, 10);
+            this.comboBoxRowHeight.Location = new System.Drawing.Point(103, 91);
             this.comboBoxRowHeight.Name = "comboBoxRowHeight";
             this.comboBoxRowHeight.Size = new System.Drawing.Size(89, 25);
-            this.comboBoxRowHeight.TabIndex = 7;
+            this.comboBoxRowHeight.TabIndex = 0;
             this.comboBoxRowHeight.SelectedIndexChanged += new System.EventHandler(this.comboBoxRowHeight_SelectedIndexChanged);
             // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 14);
+            this.label17.Location = new System.Drawing.Point(6, 95);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(78, 17);
             this.label17.TabIndex = 0;
@@ -167,7 +272,7 @@
             this.btnClearPorts.Location = new System.Drawing.Point(337, 294);
             this.btnClearPorts.Name = "btnClearPorts";
             this.btnClearPorts.Size = new System.Drawing.Size(54, 32);
-            this.btnClearPorts.TabIndex = 22;
+            this.btnClearPorts.TabIndex = 2;
             this.btnClearPorts.Text = "Clear";
             this.btnClearPorts.UseVisualStyleBackColor = true;
             this.btnClearPorts.Click += new System.EventHandler(this.btnClearPorts_Click_1);
@@ -177,7 +282,7 @@
             this.btnResumePort.Location = new System.Drawing.Point(337, 136);
             this.btnResumePort.Name = "btnResumePort";
             this.btnResumePort.Size = new System.Drawing.Size(54, 32);
-            this.btnResumePort.TabIndex = 21;
+            this.btnResumePort.TabIndex = 1;
             this.btnResumePort.Text = "<<";
             this.btnResumePort.UseVisualStyleBackColor = true;
             this.btnResumePort.Click += new System.EventHandler(this.btnResumePort_Click_1);
@@ -187,7 +292,7 @@
             this.btnRemovePort.Location = new System.Drawing.Point(337, 93);
             this.btnRemovePort.Name = "btnRemovePort";
             this.btnRemovePort.Size = new System.Drawing.Size(54, 32);
-            this.btnRemovePort.TabIndex = 20;
+            this.btnRemovePort.TabIndex = 0;
             this.btnRemovePort.Text = ">>";
             this.btnRemovePort.UseVisualStyleBackColor = true;
             this.btnRemovePort.Click += new System.EventHandler(this.btnRemovePort_Click);
@@ -231,7 +336,7 @@
             this.nudPortStart.Location = new System.Drawing.Point(9, 18);
             this.nudPortStart.Name = "nudPortStart";
             this.nudPortStart.Size = new System.Drawing.Size(54, 23);
-            this.nudPortStart.TabIndex = 1;
+            this.nudPortStart.TabIndex = 0;
             // 
             // nudPortEnd
             // 
@@ -254,14 +359,14 @@
             this.tboxPortSingleAddInput.Location = new System.Drawing.Point(9, 59);
             this.tboxPortSingleAddInput.Name = "tboxPortSingleAddInput";
             this.tboxPortSingleAddInput.Size = new System.Drawing.Size(124, 23);
-            this.tboxPortSingleAddInput.TabIndex = 9;
+            this.tboxPortSingleAddInput.TabIndex = 3;
             // 
             // btnPortsSingleAdd
             // 
             this.btnPortsSingleAdd.Location = new System.Drawing.Point(139, 54);
             this.btnPortsSingleAdd.Name = "btnPortsSingleAdd";
             this.btnPortsSingleAdd.Size = new System.Drawing.Size(72, 32);
-            this.btnPortsSingleAdd.TabIndex = 1;
+            this.btnPortsSingleAdd.TabIndex = 4;
             this.btnPortsSingleAdd.Text = "Add";
             this.btnPortsSingleAdd.UseVisualStyleBackColor = true;
             this.btnPortsSingleAdd.Click += new System.EventHandler(this.btnPortsSingleAdd_Click);
@@ -271,7 +376,7 @@
             this.btnPortsRangeAdd.Location = new System.Drawing.Point(139, 13);
             this.btnPortsRangeAdd.Name = "btnPortsRangeAdd";
             this.btnPortsRangeAdd.Size = new System.Drawing.Size(72, 32);
-            this.btnPortsRangeAdd.TabIndex = 0;
+            this.btnPortsRangeAdd.TabIndex = 2;
             this.btnPortsRangeAdd.Text = "+Range";
             this.btnPortsRangeAdd.UseVisualStyleBackColor = true;
             this.btnPortsRangeAdd.Click += new System.EventHandler(this.btnPortsRangeAdd_Click);
@@ -317,7 +422,7 @@
             this.btnAddSerialDevicePattern.Location = new System.Drawing.Point(429, 283);
             this.btnAddSerialDevicePattern.Name = "btnAddSerialDevicePattern";
             this.btnAddSerialDevicePattern.Size = new System.Drawing.Size(42, 32);
-            this.btnAddSerialDevicePattern.TabIndex = 7;
+            this.btnAddSerialDevicePattern.TabIndex = 3;
             this.btnAddSerialDevicePattern.Text = "ADD";
             this.btnAddSerialDevicePattern.UseVisualStyleBackColor = true;
             this.btnAddSerialDevicePattern.Click += new System.EventHandler(this.btnAddSerialDevicePattern_Click);
@@ -327,7 +432,7 @@
             this.btnAddProcName.Location = new System.Drawing.Point(152, 283);
             this.btnAddProcName.Name = "btnAddProcName";
             this.btnAddProcName.Size = new System.Drawing.Size(42, 32);
-            this.btnAddProcName.TabIndex = 7;
+            this.btnAddProcName.TabIndex = 1;
             this.btnAddProcName.Text = "ADD";
             this.btnAddProcName.UseVisualStyleBackColor = true;
             this.btnAddProcName.Click += new System.EventHandler(this.btnAddProcName_Click);
@@ -337,14 +442,14 @@
             this.tboxSerialDevicePattern.Location = new System.Drawing.Point(293, 288);
             this.tboxSerialDevicePattern.Name = "tboxSerialDevicePattern";
             this.tboxSerialDevicePattern.Size = new System.Drawing.Size(130, 23);
-            this.tboxSerialDevicePattern.TabIndex = 5;
+            this.tboxSerialDevicePattern.TabIndex = 2;
             // 
             // tboxInputProcName
             // 
             this.tboxInputProcName.Location = new System.Drawing.Point(16, 288);
             this.tboxInputProcName.Name = "tboxInputProcName";
             this.tboxInputProcName.Size = new System.Drawing.Size(130, 23);
-            this.tboxInputProcName.TabIndex = 5;
+            this.tboxInputProcName.TabIndex = 0;
             // 
             // label15
             // 
@@ -420,7 +525,7 @@
             this.btnBuildDeviceFileNameMap.Location = new System.Drawing.Point(310, 152);
             this.btnBuildDeviceFileNameMap.Name = "btnBuildDeviceFileNameMap";
             this.btnBuildDeviceFileNameMap.Size = new System.Drawing.Size(75, 33);
-            this.btnBuildDeviceFileNameMap.TabIndex = 2;
+            this.btnBuildDeviceFileNameMap.TabIndex = 0;
             this.btnBuildDeviceFileNameMap.Text = "Build";
             this.btnBuildDeviceFileNameMap.UseVisualStyleBackColor = true;
             this.btnBuildDeviceFileNameMap.Click += new System.EventHandler(this.btnBuildDeviceFileNameMap_Click);
@@ -455,7 +560,7 @@
             this.btnUpdateOrAdd.Location = new System.Drawing.Point(122, 97);
             this.btnUpdateOrAdd.Name = "btnUpdateOrAdd";
             this.btnUpdateOrAdd.Size = new System.Drawing.Size(75, 33);
-            this.btnUpdateOrAdd.TabIndex = 2;
+            this.btnUpdateOrAdd.TabIndex = 3;
             this.btnUpdateOrAdd.Text = "Update";
             this.btnUpdateOrAdd.UseVisualStyleBackColor = true;
             this.btnUpdateOrAdd.Click += new System.EventHandler(this.btnUpdateOrAdd_Click);
@@ -482,7 +587,7 @@
             this.tboxPort.Location = new System.Drawing.Point(44, 16);
             this.tboxPort.Name = "tboxPort";
             this.tboxPort.Size = new System.Drawing.Size(81, 23);
-            this.tboxPort.TabIndex = 1;
+            this.tboxPort.TabIndex = 0;
             // 
             // label7
             // 
@@ -515,6 +620,157 @@
             // 
             this.columnHeaderDeviceFileName.Text = "DeviceFileName";
             this.columnHeaderDeviceFileName.Width = 194;
+            // 
+            // tabPageOwner
+            // 
+            this.tabPageOwner.Controls.Add(this.btnDeleteOwnerTranslate);
+            this.tabPageOwner.Controls.Add(this.btnAddNewOwnerTranslate);
+            this.tabPageOwner.Controls.Add(this.groupOwnerTranslateInfo);
+            this.tabPageOwner.Controls.Add(this.listViewOwnerTranslate);
+            this.tabPageOwner.Location = new System.Drawing.Point(4, 26);
+            this.tabPageOwner.Name = "tabPageOwner";
+            this.tabPageOwner.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageOwner.Size = new System.Drawing.Size(513, 341);
+            this.tabPageOwner.TabIndex = 5;
+            this.tabPageOwner.Text = "Owner";
+            this.tabPageOwner.UseVisualStyleBackColor = true;
+            // 
+            // btnDeleteOwnerTranslate
+            // 
+            this.btnDeleteOwnerTranslate.Location = new System.Drawing.Point(453, 202);
+            this.btnDeleteOwnerTranslate.Name = "btnDeleteOwnerTranslate";
+            this.btnDeleteOwnerTranslate.Size = new System.Drawing.Size(54, 32);
+            this.btnDeleteOwnerTranslate.TabIndex = 1;
+            this.btnDeleteOwnerTranslate.Text = "Delete";
+            this.btnDeleteOwnerTranslate.UseVisualStyleBackColor = true;
+            this.btnDeleteOwnerTranslate.Click += new System.EventHandler(this.btnDeleteOwnerTranslate_Click);
+            // 
+            // btnAddNewOwnerTranslate
+            // 
+            this.btnAddNewOwnerTranslate.Location = new System.Drawing.Point(251, 301);
+            this.btnAddNewOwnerTranslate.Name = "btnAddNewOwnerTranslate";
+            this.btnAddNewOwnerTranslate.Size = new System.Drawing.Size(54, 32);
+            this.btnAddNewOwnerTranslate.TabIndex = 0;
+            this.btnAddNewOwnerTranslate.Text = "Add";
+            this.btnAddNewOwnerTranslate.UseVisualStyleBackColor = true;
+            this.btnAddNewOwnerTranslate.Click += new System.EventHandler(this.btnAddNewOwnerTranslate_Click);
+            // 
+            // groupOwnerTranslateInfo
+            // 
+            this.groupOwnerTranslateInfo.Controls.Add(this.tboxOwnerPhone);
+            this.groupOwnerTranslateInfo.Controls.Add(this.label23);
+            this.groupOwnerTranslateInfo.Controls.Add(this.tboxOwnerShortName);
+            this.groupOwnerTranslateInfo.Controls.Add(this.label22);
+            this.groupOwnerTranslateInfo.Controls.Add(this.tboxOwnerFullName);
+            this.groupOwnerTranslateInfo.Controls.Add(this.label21);
+            this.groupOwnerTranslateInfo.Controls.Add(this.tboxDomainUser);
+            this.groupOwnerTranslateInfo.Controls.Add(this.label20);
+            this.groupOwnerTranslateInfo.Location = new System.Drawing.Point(6, 203);
+            this.groupOwnerTranslateInfo.Name = "groupOwnerTranslateInfo";
+            this.groupOwnerTranslateInfo.Size = new System.Drawing.Size(239, 130);
+            this.groupOwnerTranslateInfo.TabIndex = 1;
+            this.groupOwnerTranslateInfo.TabStop = false;
+            this.groupOwnerTranslateInfo.Text = "Owner";
+            // 
+            // tboxOwnerPhone
+            // 
+            this.tboxOwnerPhone.Location = new System.Drawing.Point(94, 100);
+            this.tboxOwnerPhone.Name = "tboxOwnerPhone";
+            this.tboxOwnerPhone.Size = new System.Drawing.Size(139, 23);
+            this.tboxOwnerPhone.TabIndex = 3;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(45, 103);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(44, 17);
+            this.label23.TabIndex = 2;
+            this.label23.Text = "Phone";
+            // 
+            // tboxOwnerShortName
+            // 
+            this.tboxOwnerShortName.Location = new System.Drawing.Point(94, 72);
+            this.tboxOwnerShortName.Name = "tboxOwnerShortName";
+            this.tboxOwnerShortName.Size = new System.Drawing.Size(139, 23);
+            this.tboxOwnerShortName.TabIndex = 2;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(15, 75);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(74, 17);
+            this.label22.TabIndex = 2;
+            this.label22.Text = "ShortName";
+            // 
+            // tboxOwnerFullName
+            // 
+            this.tboxOwnerFullName.Location = new System.Drawing.Point(94, 44);
+            this.tboxOwnerFullName.Name = "tboxOwnerFullName";
+            this.tboxOwnerFullName.Size = new System.Drawing.Size(139, 23);
+            this.tboxOwnerFullName.TabIndex = 1;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(27, 47);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(62, 17);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "FullName";
+            // 
+            // tboxDomainUser
+            // 
+            this.tboxDomainUser.Location = new System.Drawing.Point(94, 15);
+            this.tboxDomainUser.Name = "tboxDomainUser";
+            this.tboxDomainUser.Size = new System.Drawing.Size(139, 23);
+            this.tboxDomainUser.TabIndex = 0;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(4, 18);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(85, 17);
+            this.label20.TabIndex = 2;
+            this.label20.Text = "Domain\\User";
+            // 
+            // listViewOwnerTranslate
+            // 
+            this.listViewOwnerTranslate.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderDomainUser,
+            this.columnHeaderFullName,
+            this.columnHeaderShortName,
+            this.columnHeaderPhone});
+            this.listViewOwnerTranslate.Location = new System.Drawing.Point(6, 6);
+            this.listViewOwnerTranslate.Name = "listViewOwnerTranslate";
+            this.listViewOwnerTranslate.Size = new System.Drawing.Size(501, 192);
+            this.listViewOwnerTranslate.TabIndex = 0;
+            this.listViewOwnerTranslate.UseCompatibleStateImageBehavior = false;
+            this.listViewOwnerTranslate.View = System.Windows.Forms.View.Details;
+            this.listViewOwnerTranslate.SelectedIndexChanged += new System.EventHandler(this.listViewOwnerTranslate_SelectedIndexChanged);
+            this.listViewOwnerTranslate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewOwnerTranslate_KeyDown);
+            // 
+            // columnHeaderDomainUser
+            // 
+            this.columnHeaderDomainUser.Text = "Domain\\User";
+            this.columnHeaderDomainUser.Width = 160;
+            // 
+            // columnHeaderFullName
+            // 
+            this.columnHeaderFullName.Text = "FullName";
+            this.columnHeaderFullName.Width = 135;
+            // 
+            // columnHeaderShortName
+            // 
+            this.columnHeaderShortName.Text = "ShortName";
+            this.columnHeaderShortName.Width = 115;
+            // 
+            // columnHeaderPhone
+            // 
+            this.columnHeaderPhone.Text = "Phone";
+            this.columnHeaderPhone.Width = 80;
             // 
             // tabPageAbout
             // 
@@ -646,7 +902,7 @@
             this.btnSave.Location = new System.Drawing.Point(477, 384);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(54, 32);
-            this.btnSave.TabIndex = 19;
+            this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -656,7 +912,7 @@
             this.button1.Location = new System.Drawing.Point(9, 382);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(60, 32);
-            this.button1.TabIndex = 19;
+            this.button1.TabIndex = 1;
             this.button1.Text = "Default";
             this.button1.UseVisualStyleBackColor = true;
             // 
@@ -680,6 +936,9 @@
             this.tabCtrlSetting.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();
+            this.groupBoxRefreshSetting.ResumeLayout(false);
+            this.groupBoxRefreshSetting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownRefreshInterval)).EndInit();
             this.tabPageComPorts.ResumeLayout(false);
             this.tabPageComPorts.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -692,6 +951,9 @@
             this.tabPageDeviceMap.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPageOwner.ResumeLayout(false);
+            this.groupOwnerTranslateInfo.ResumeLayout(false);
+            this.groupOwnerTranslateInfo.PerformLayout();
             this.tabPageAbout.ResumeLayout(false);
             this.tabPageAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -757,5 +1019,29 @@
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.ComboBox comboBoxRowHeight;
+        private System.Windows.Forms.CheckBox cboxEnableAutoRefreshAtStartup;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.NumericUpDown upDownRefreshInterval;
+        private System.Windows.Forms.GroupBox groupBoxRefreshSetting;
+        private System.Windows.Forms.TabPage tabPageOwner;
+        private System.Windows.Forms.ListView listViewOwnerTranslate;
+        private System.Windows.Forms.GroupBox groupOwnerTranslateInfo;
+        private System.Windows.Forms.TextBox tboxDomainUser;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox tboxOwnerFullName;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ColumnHeader columnHeaderDomainUser;
+        private System.Windows.Forms.ColumnHeader columnHeaderFullName;
+        private System.Windows.Forms.ColumnHeader columnHeaderShortName;
+        private System.Windows.Forms.ColumnHeader columnHeaderPhone;
+        private System.Windows.Forms.TextBox tboxOwnerPhone;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox tboxOwnerShortName;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Button btnAddNewOwnerTranslate;
+        private System.Windows.Forms.Button btnDeleteOwnerTranslate;
+        private System.Windows.Forms.ComboBox comboxBoxOwnerShowFormat;
+        private System.Windows.Forms.Label label24;
     }
 }

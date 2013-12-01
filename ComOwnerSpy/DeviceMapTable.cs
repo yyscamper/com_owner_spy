@@ -137,7 +137,7 @@ namespace ComOwnerSpy
 
             for (int i = 0; i < allPorts.Length; i++)
             {
-                string port = (string)allPorts[i];
+                string port = allPorts[i];
                 try
                 {
                     SerialPort sp = new SerialPort("COM" + port);

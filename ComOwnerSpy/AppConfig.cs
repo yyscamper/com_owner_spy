@@ -10,16 +10,50 @@ namespace ComOwnerSpy
 {
     public static class AppConfig
     {
-        private static string[] _allSuspectProcessNames = new string[] { "SecureCRT", "ttermpro", "Multy-Term" };
-        private static bool _flagOwnerWithDomain = true;
-        private static string[] _serialDeviceNamePatterns = new string[] { "\\Device\\Serial", "\\Device\\mxuport" };
-        private static int _minSerialDeviceNamePatternLength = Math.Min("\\Device\\Serial".Length, "\\Device\\mxuport".Length);
+        private static string[] _allSuspectProcessNames;
+        private static bool _flagOwnerWithDomain;
+        private static string[] _serialDeviceNamePatterns;
+        private static int _minSerialDeviceNamePatternLength;
         private static string _deviceMapFilePath;
-        private static int _rowHeight = 24;
+        private static int _rowHeight;
+        private static bool _enableAutoRefreshAtStartup;
+        private static int _autoRefreshInternval;
+        private static OwnerShowFormat _ownerShowFmt;
 
         static AppConfig()
         {
+            ResetDefault();
+        }
+
+        public static void ResetDefault()
+        {
+            _allSuspectProcessNames = new string[] { "SecureCRT", "ttermpro", "Multy-Term" };
             _deviceMapFilePath = System.Environment.CurrentDirectory + "\\config\\serial_devices.map";
+            _flagOwnerWithDomain = true;
+            _serialDeviceNamePatterns = new string[] { "\\Device\\Serial", "\\Device\\mxuport" };
+            _minSerialDeviceNamePatternLength = Math.Min("\\Device\\Serial".Length, "\\Device\\mxuport".Length);
+            _rowHeight = 24;
+            _enableAutoRefreshAtStartup = true;
+            _autoRefreshInternval = 5;
+            _ownerShowFmt = OwnerShowFormat.Default;
+        }
+
+        public static OwnerShowFormat OwnerFormat
+        {
+            get {return _ownerShowFmt; }
+            set { _ownerShowFmt = value; }
+        }
+
+        public static int AutoRefreshInterval
+        {
+            get { return _autoRefreshInternval; }
+            set { _autoRefreshInternval = value; }
+        }
+
+        public static bool EnableAutoRefreshAtStartup
+        {
+            get { return _enableAutoRefreshAtStartup; }
+            set { _enableAutoRefreshAtStartup = value; }
         }
 
         public static int RowHeight
@@ -142,6 +176,38 @@ namespace ComOwnerSpy
                         _rowHeight = 24;
                     }
                 }
+                else if (line.StartsWith("EnableAutoRefreshAtStartup:"))
+                {
+                    bool val = false;
+                    try
+                    {
+                        val = bool.Parse(line.Substring("EnableAutoRefreshAtStartup:".Length));
+                    }
+                    catch
+                    {
+                        val = false;
+                    }
+                    _enableAutoRefreshAtStartup = val;
+                }
+                else if (line.StartsWith("AutoRefreshInternval:"))
+                {
+
+                    int val = 30;
+                    try
+                    {
+                        val = int.Parse(line.Substring("AutoRefreshInternval:".Length));
+                    }
+                    catch
+                    {
+                        val = 30;
+                    }
+                    _autoRefreshInternval = val; ;
+                }
+                else if (line.StartsWith("OwnerShowFormat:"))
+                {
+                    string str = line.Substring("OwnerShowFormat:".Length);
+                    _ownerShowFmt = Utility.ParseOwnerShowFormat(str);
+                }
                 else if (line.StartsWith("#End Data#"))
                     break; //end of config file
             }
@@ -162,6 +228,9 @@ namespace ComOwnerSpy
             writer.WriteLine("SuspectProcessNames:" + string.Join(",", _allSuspectProcessNames));
             writer.WriteLine("SerialDeviceNamePatterns:" + string.Join(",", _serialDeviceNamePatterns));
             writer.WriteLine("RowHeight:" + _rowHeight.ToString());
+            writer.WriteLine("EnableAutoRefreshAtStartup:" + _enableAutoRefreshAtStartup.ToString());
+            writer.WriteLine("AutoRefreshInternval:" + _autoRefreshInternval.ToString());
+            writer.WriteLine("OwnerShowFormat:" + _ownerShowFmt.ToString().ToLower());
             writer.WriteLine("#End Data#");
             writer.Flush();
             writer.Close();

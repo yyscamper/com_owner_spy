@@ -97,5 +97,34 @@ namespace ComOwnerSpy
         {
             return MessageBox.Show(txt, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        public static bool ValidateDomainUser(string str) //validate whether the string is valid domain\user input
+        {
+            char[] seps = new char[] {'\\', '/'};
+
+            if (str == null || str.Length < 3)
+                return false;
+            int sindex = str.IndexOfAny(seps);
+            int eindex = str.LastIndexOfAny(seps);
+
+            return (sindex > 0 && sindex == eindex && sindex < str.Length - 1); //Only on seprator
+        }
+
+        public static OwnerShowFormat ParseOwnerShowFormat(string str)
+        {
+            str = str.ToLower();
+            if (str == "default")
+                return OwnerShowFormat.Default;
+            else if (str == "domainuser")
+                return OwnerShowFormat.DomainUser;
+            else if (str == "fullname")
+                return OwnerShowFormat.FullName;
+            else if (str == "shortname")
+                return OwnerShowFormat.ShortName;
+            else if (str == "phone")
+                return OwnerShowFormat.Phone;
+            else
+                return OwnerShowFormat.Default;
+        }
     }
 }

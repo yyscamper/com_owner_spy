@@ -67,6 +67,11 @@ namespace ComOwnerSpy
             set { _owner = value; }
         }
 
+        public string OwnerShow
+        {
+            get { return OwnerTranslate.GetOwnerShow(AppConfig.OwnerFormat, _owner); }
+        }
+
         public string App
         {
             get { return _app; }

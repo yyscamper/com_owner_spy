@@ -26,13 +26,14 @@ namespace ComOwnerSpy
                     return;
                 }
                 DeviceMapTable.Load("config\\serial_devices.map");
+                OwnerTranslate.LoadFromFile("config\\owner_translate.dat");
                 AppConfig.LoadGlobalConfig();
             }
             catch
             {
 
             }
-            Application.Run(new bntSetting());
+            Application.Run(new FormMain());
         }
     }
 }

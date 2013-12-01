@@ -33,6 +33,7 @@ namespace ComOwnerSpy
             InitTabSuspectProc();
             InitTabAbout();
             InitTabDeviceNameFileMap();
+            InitTabOwnerTranslate();
 
             m_generalEventHandle = eventHandle;
         }
@@ -54,6 +55,13 @@ namespace ComOwnerSpy
                 comboBoxRowHeight.Items.Add(val.ToString());
             }
             comboBoxRowHeight.Text = AppConfig.RowHeight.ToString();
+
+            upDownRefreshInterval.Minimum = 1;
+            upDownRefreshInterval.Maximum = 300;
+            upDownRefreshInterval.Value = AppConfig.AutoRefreshInterval;
+            cboxEnableAutoRefreshAtStartup.Checked = AppConfig.EnableAutoRefreshAtStartup;
+            upDownRefreshInterval.Enabled = cboxEnableAutoRefreshAtStartup.Checked;
+            comboxBoxOwnerShowFormat.SelectedIndex = (int)AppConfig.OwnerFormat;
         }
 
         #endregion
@@ -405,12 +413,141 @@ namespace ComOwnerSpy
         #endregion
 
 
+        #region tabOwner
+
+        private void InitTabOwnerTranslate()
+        {
+            listViewOwnerTranslate.FullRowSelect = true;
+            tboxDomainUser.Text = tboxOwnerFullName.Text = tboxOwnerShortName.Text = tboxOwnerPhone.Text = string.Empty;
+            btnDeleteOwnerTranslate.Enabled = false;
+            RefreshTabOwnerTranslate();
+        }
+
+        private void RefreshTabOwnerTranslate()
+        {
+            SortedDictionary<string, Owner> allOwners = OwnerTranslate.AllOwners;
+            listViewOwnerTranslate.Items.Clear();
+            foreach (Owner owner in allOwners.Values)
+            {
+                ListViewItem litem = new ListViewItem(new string[] { owner.Key, owner.FullName, owner.ShortName, owner.Phone });
+                listViewOwnerTranslate.Items.Add(litem);
+            }
+        }
+
+        private void listViewOwnerTranslate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewOwnerTranslate.SelectedItems.Count <= 0)
+            {
+                btnDeleteOwnerTranslate.Enabled = false;
+                return;
+            }
+
+            btnDeleteOwnerTranslate.Enabled = true;
+        }
+        
+        private void SelectOwnerTranslateVisuable(string domainuser)
+        {
+            foreach (ListViewItem item in listViewOwnerTranslate.Items)
+            {
+                if (item.SubItems[0].Text == domainuser)
+                {
+                    item.Selected = true;
+                    listViewOwnerTranslate.Select();
+                    item.EnsureVisible();
+                }
+            }
+        }
+
+        private void btnAddNewOwnerTranslate_Click(object sender, EventArgs e)
+        {
+            string domainUser = tboxDomainUser.Text.Trim().ToLower();
+            if (!Utility.ValidateDomainUser(domainUser))
+            {
+                yMessageBox.ShowError(this, "Your input 'Domain\\User' format is not correct, it should be like corp\\abcd or my/bcd.");
+                return;
+            }
+
+            if (OwnerTranslate.Contains(domainUser))
+            {
+                yMessageBox.ShowConfirm(this, "Your input 'Domain\\User' has been contained! If you want to edit it, you should first delete then add a new one.");
+                return;
+            }
+
+            string fullName = tboxOwnerFullName.Text.Trim();
+            if (fullName.Length == 0)
+            {
+                yMessageBox.ShowError(this, "The 'FullName' should not be empty!");
+                return;
+            }
+
+            string shortName = tboxOwnerShortName.Text.Trim();
+            if (shortName.Length == 0)
+            {
+                yMessageBox.ShowError(this, "The 'ShortName' should not be empty!");
+                return;
+            }
+
+            Owner owner = new Owner(domainUser);
+            owner.FullName = fullName;
+            owner.ShortName = shortName;
+            owner.Phone = tboxOwnerPhone.Text.Trim();
+
+            OwnerTranslate.Add(owner);
+
+            RefreshTabOwnerTranslate();
+
+            SelectOwnerTranslateVisuable(domainUser);
+
+            tboxDomainUser.Text = tboxOwnerFullName.Text = tboxOwnerShortName.Text
+                = tboxOwnerPhone.Text = string.Empty;
+
+            tboxDomainUser.Focus();
+        }
+
+        private void DeleteOwnerTranslate()
+        {
+            if (listViewOwnerTranslate.SelectedItems.Count <= 0)
+                return;
+
+            if (DialogResult.No == yMessageBox.ShowConfirm(this, "Are your sure want to delete the '" + listViewOwnerTranslate.SelectedItems[0].SubItems[0].Text + "'?", "Delete Owner Translate Confirm", MessageBoxButtons.YesNo))
+            {
+                return;
+            }
+            string key = listViewOwnerTranslate.SelectedItems[0].SubItems[0].Text;
+            OwnerTranslate.Remove(key);
+
+            RefreshTabOwnerTranslate();
+        }
+
+        private void btnDeleteOwnerTranslate_Click(object sender, EventArgs e)
+        {
+            DeleteOwnerTranslate();
+        }
+
+        private void listViewOwnerTranslate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                DeleteOwnerTranslate();
+            }
+        }
+
+        private void SaveOwnerTranslate()
+        {
+            OwnerTranslate.SaveToFile("config\\owner_translate.dat");
+        }
+
+        #endregion
+
         #region save_default_action
 
         private void Save()
         {
+            AppConfig.EnableAutoRefreshAtStartup = cboxEnableAutoRefreshAtStartup.Enabled;
+            AppConfig.AutoRefreshInterval = (int)upDownRefreshInterval.Value;
             SaveTabComPorts();
             SaveTabSuspectProc();
+            SaveOwnerTranslate();
         }
 
 
@@ -493,6 +630,13 @@ namespace ComOwnerSpy
                 m_generalEventHandle.UpdateRowHeight(int.Parse(comboBoxRowHeight.Text));
         }
 
+        private void comboBoxOwnerShowFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AppConfig.OwnerFormat = (OwnerShowFormat)comboxBoxOwnerShowFormat.SelectedIndex;
+            if (m_generalEventHandle != null)
+                m_generalEventHandle.UpdateOwnerFormat(AppConfig.OwnerFormat);
+        }
+
         private void FormSetting_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!m_hasDoneSave && DialogResult.No == yMessageBox.ShowConfirm(this, "Are you sure want to close? If so, all modification will be discared."))
@@ -500,5 +644,14 @@ namespace ComOwnerSpy
                 e.Cancel = true;
             }
         }
+
+        private void cboxEnableAutoRefreshAtStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            upDownRefreshInterval.Enabled = cboxEnableAutoRefreshAtStartup.Checked;
+        }
+
+
+
+
     }
 }

@@ -8,5 +8,6 @@ namespace ComOwnerSpy
     public interface IGeneralEvent
     {
         void UpdateRowHeight(int rowHeight);
+        void UpdateOwnerFormat(OwnerShowFormat fmt);
     }
 }

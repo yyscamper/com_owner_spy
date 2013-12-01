@@ -39,7 +39,8 @@
             // btn1
             // 
             this.btn1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn1.Location = new System.Drawing.Point(378, 126);
+            this.btn1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn1.Location = new System.Drawing.Point(378, 121);
             this.btn1.Name = "btn1";
             this.btn1.Size = new System.Drawing.Size(81, 34);
             this.btn1.TabIndex = 0;
@@ -49,7 +50,8 @@
             // 
             // btn2
             // 
-            this.btn2.Location = new System.Drawing.Point(291, 126);
+            this.btn2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn2.Location = new System.Drawing.Point(291, 121);
             this.btn2.Name = "btn2";
             this.btn2.Size = new System.Drawing.Size(81, 34);
             this.btn2.TabIndex = 1;
@@ -61,16 +63,16 @@
             // 
             this.richBoxMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richBoxMessage.Font = new System.Drawing.Font("微软雅黑", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.richBoxMessage.Location = new System.Drawing.Point(78, 12);
+            this.richBoxMessage.Location = new System.Drawing.Point(85, 12);
             this.richBoxMessage.Name = "richBoxMessage";
             this.richBoxMessage.ReadOnly = true;
-            this.richBoxMessage.Size = new System.Drawing.Size(381, 109);
+            this.richBoxMessage.Size = new System.Drawing.Size(374, 100);
             this.richBoxMessage.TabIndex = 2;
             this.richBoxMessage.Text = "";
             // 
             // picBox
             // 
-            this.picBox.Location = new System.Drawing.Point(6, 14);
+            this.picBox.Location = new System.Drawing.Point(9, 14);
             this.picBox.Name = "picBox";
             this.picBox.Size = new System.Drawing.Size(64, 64);
             this.picBox.TabIndex = 1;

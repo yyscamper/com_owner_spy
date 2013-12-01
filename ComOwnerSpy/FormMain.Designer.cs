@@ -1,6 +1,6 @@
 ﻿namespace ComOwnerSpy
 {
-    partial class bntSetting
+    partial class FormMain
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(bntSetting));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.listPortTable = new System.Windows.Forms.ListView();
             this.ctxMenuPortsTable = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuRefresh = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,7 +93,7 @@
             this.checkBoxAutoRefresh.Location = new System.Drawing.Point(10, 19);
             this.checkBoxAutoRefresh.Name = "checkBoxAutoRefresh";
             this.checkBoxAutoRefresh.Size = new System.Drawing.Size(102, 21);
-            this.checkBoxAutoRefresh.TabIndex = 4;
+            this.checkBoxAutoRefresh.TabIndex = 0;
             this.checkBoxAutoRefresh.Text = "Auto Refresh";
             this.checkBoxAutoRefresh.UseVisualStyleBackColor = true;
             this.checkBoxAutoRefresh.CheckedChanged += new System.EventHandler(this.checkBoxAutoRefresh_CheckedChanged);
@@ -105,7 +105,7 @@
             this.btnPortsSetting.Location = new System.Drawing.Point(715, 14);
             this.btnPortsSetting.Name = "btnPortsSetting";
             this.btnPortsSetting.Size = new System.Drawing.Size(64, 32);
-            this.btnPortsSetting.TabIndex = 0;
+            this.btnPortsSetting.TabIndex = 4;
             this.btnPortsSetting.Text = "Setting";
             this.btnPortsSetting.UseVisualStyleBackColor = true;
             this.btnPortsSetting.Click += new System.EventHandler(this.btnPortsSetting_Click);
@@ -130,7 +130,7 @@
             this.comboBoxJumpPort.Location = new System.Drawing.Point(208, 17);
             this.comboBoxJumpPort.Name = "comboBoxJumpPort";
             this.comboBoxJumpPort.Size = new System.Drawing.Size(80, 25);
-            this.comboBoxJumpPort.TabIndex = 5;
+            this.comboBoxJumpPort.TabIndex = 2;
             this.comboBoxJumpPort.SelectedIndexChanged += new System.EventHandler(this.comboBoxJumpPort_SelectedIndexChanged);
             // 
             // btnRefresh
@@ -150,7 +150,7 @@
             this.btnJumpPort.Location = new System.Drawing.Point(293, 14);
             this.btnJumpPort.Name = "btnJumpPort";
             this.btnJumpPort.Size = new System.Drawing.Size(64, 32);
-            this.btnJumpPort.TabIndex = 1;
+            this.btnJumpPort.TabIndex = 3;
             this.btnJumpPort.Text = "Jump";
             this.btnJumpPort.UseVisualStyleBackColor = true;
             this.btnJumpPort.Click += new System.EventHandler(this.btnJumpPort_Click);
@@ -193,7 +193,7 @@
             this.statusLabelRefreshConsumeTime.Size = new System.Drawing.Size(46, 17);
             this.statusLabelRefreshConsumeTime.Text = "?.? sec";
             // 
-            // bntSetting
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -204,7 +204,7 @@
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "bntSetting";
+            this.Name = "FormMain";
             this.Text = "COM Owner Spy";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.bntSetting_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
