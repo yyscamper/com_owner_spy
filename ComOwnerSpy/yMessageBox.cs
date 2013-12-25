@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,6 +12,9 @@ namespace ComOwnerSpy
 {
     public partial  class yMessageBox : Form
     {
+        static Font regularFont = new Font("Microsoft Yahei", 10.0f, FontStyle.Regular);
+        static Font highlightFont = new Font("Microsoft Yahei", 11.0f, FontStyle.Bold);
+
         private MessageBoxButtons _btnType = MessageBoxButtons.OK;
 
         private yMessageBox(
@@ -162,6 +166,93 @@ namespace ComOwnerSpy
 
         private void yMessageBox_FormClosed(object sender, FormClosedEventArgs e)
         {
+        }
+
+        public static DialogResult ShowKillProcConfirm(
+               ComItem item,
+               ArrayList otherPortsInProcess,
+               Control parent = null,
+               string title = "Confirm",
+               MessageBoxButtons btns = MessageBoxButtons.YesNo,
+               MessageBoxIcon icon = MessageBoxIcon.Question
+           )
+        {
+            yMessageBox msgBox = new yMessageBox(parent, string.Empty, title, btns, icon);
+
+            if (otherPortsInProcess == null || otherPortsInProcess.Count == 0)
+            {
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText("Are you sure want to ");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Red;
+                msgBox.richBoxMessage.SelectionFont = highlightFont;
+                msgBox.richBoxMessage.AppendText("KILL");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText(" the port ");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Red;
+                msgBox.richBoxMessage.SelectionFont = highlightFont;
+                msgBox.richBoxMessage.AppendText("COM" + item.Port);
+
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText("?");
+            }
+            else
+            {
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText("Are you sure want to ");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Red;
+                msgBox.richBoxMessage.SelectionFont = highlightFont;
+                msgBox.richBoxMessage.AppendText("KILL");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText(" the port ");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Red;
+                msgBox.richBoxMessage.SelectionFont = highlightFont;
+                msgBox.richBoxMessage.AppendText("COM" + item.Port);
+
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText("?" + System.Environment.NewLine);
+                msgBox.richBoxMessage.AppendText("The following port" + (otherPortsInProcess.Count > 1 ? "s" : string.Empty) + " will also be ");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Red;
+                msgBox.richBoxMessage.SelectionFont = highlightFont;
+                msgBox.richBoxMessage.AppendText("KILLED");
+
+                msgBox.richBoxMessage.SelectionColor = Color.Black;
+                msgBox.richBoxMessage.SelectionFont = regularFont;
+                msgBox.richBoxMessage.AppendText(" as they are opened in the same process:"
+                    + System.Environment.NewLine);
+
+
+                msgBox.richBoxMessage.SelectionFont = highlightFont;
+                for (int i = 0; i < otherPortsInProcess.Count; i++ )
+                {
+                    msgBox.richBoxMessage.SelectionColor = Color.Red;
+                    msgBox.richBoxMessage.AppendText("COM" + ((ComItem)otherPortsInProcess[i]).Port);
+
+                    msgBox.richBoxMessage.SelectionColor = Color.Black;
+                    if (i != otherPortsInProcess.Count - 1)
+                    {
+                        msgBox.richBoxMessage.AppendText(",");
+                    }
+                    else
+                    {
+                        msgBox.richBoxMessage.AppendText("!");
+                    }
+                }
+            }
+
+            return msgBox.ShowDialog();
         }
     }
 }

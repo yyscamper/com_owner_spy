@@ -41,41 +41,14 @@
             this.label24 = new System.Windows.Forms.Label();
             this.comboBoxRowHeight = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.tabPageComPorts = new System.Windows.Forms.TabPage();
-            this.btnClearPorts = new System.Windows.Forms.Button();
-            this.btnResumePort = new System.Windows.Forms.Button();
-            this.btnRemovePort = new System.Windows.Forms.Button();
-            this.lboxRemovedPorts = new System.Windows.Forms.ListBox();
-            this.lboxSelectedPorts = new System.Windows.Forms.ListBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.nudPortStart = new System.Windows.Forms.NumericUpDown();
-            this.nudPortEnd = new System.Windows.Forms.NumericUpDown();
-            this.label16 = new System.Windows.Forms.Label();
-            this.tboxPortSingleAddInput = new System.Windows.Forms.TextBox();
-            this.btnPortsSingleAdd = new System.Windows.Forms.Button();
-            this.btnPortsRangeAdd = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabPageSuspectProc = new System.Windows.Forms.TabPage();
-            this.btnAddSerialDevicePattern = new System.Windows.Forms.Button();
             this.btnAddProcName = new System.Windows.Forms.Button();
-            this.tboxSerialDevicePattern = new System.Windows.Forms.TextBox();
             this.tboxInputProcName = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lboxSerialDeviceNamePatterns = new System.Windows.Forms.ListBox();
+            this.lboxSuspectProcNames = new System.Windows.Forms.ListBox();
             this.ctxMenuListBoxSuspectProcNames = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lboxSuspectProcNames = new System.Windows.Forms.ListBox();
             this.tabPageDeviceMap = new System.Windows.Forms.TabPage();
-            this.btnBuildDeviceFileNameMap = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnCancleUpdatePortDeviceMapEntry = new System.Windows.Forms.Button();
-            this.btnUpdateOrAdd = new System.Windows.Forms.Button();
-            this.tboxDeviceFileName = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.tboxPort = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.listViewDeviceMapTable = new System.Windows.Forms.ListView();
             this.columnHeaderPort = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDeviceFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -114,14 +87,9 @@
             this.tabPageGeneral.SuspendLayout();
             this.groupBoxRefreshSetting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.upDownRefreshInterval)).BeginInit();
-            this.tabPageComPorts.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPortStart)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPortEnd)).BeginInit();
             this.tabPageSuspectProc.SuspendLayout();
             this.ctxMenuListBoxSuspectProcNames.SuspendLayout();
             this.tabPageDeviceMap.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.tabPageOwner.SuspendLayout();
             this.groupOwnerTranslateInfo.SuspendLayout();
             this.tabPageAbout.SuspendLayout();
@@ -131,7 +99,6 @@
             // tabCtrlSetting
             // 
             this.tabCtrlSetting.Controls.Add(this.tabPageGeneral);
-            this.tabCtrlSetting.Controls.Add(this.tabPageComPorts);
             this.tabCtrlSetting.Controls.Add(this.tabPageSuspectProc);
             this.tabCtrlSetting.Controls.Add(this.tabPageDeviceMap);
             this.tabCtrlSetting.Controls.Add(this.tabPageOwner);
@@ -195,6 +162,7 @@
             this.upDownRefreshInterval.Name = "upDownRefreshInterval";
             this.upDownRefreshInterval.Size = new System.Drawing.Size(52, 23);
             this.upDownRefreshInterval.TabIndex = 1;
+            this.upDownRefreshInterval.ValueChanged += new System.EventHandler(this.upDownRefreshInterval_ValueChanged);
             // 
             // label18
             // 
@@ -217,7 +185,7 @@
             "Phone"});
             this.comboxBoxOwnerShowFormat.Location = new System.Drawing.Point(103, 122);
             this.comboxBoxOwnerShowFormat.Name = "comboxBoxOwnerShowFormat";
-            this.comboxBoxOwnerShowFormat.Size = new System.Drawing.Size(89, 25);
+            this.comboxBoxOwnerShowFormat.Size = new System.Drawing.Size(130, 25);
             this.comboxBoxOwnerShowFormat.TabIndex = 1;
             this.comboxBoxOwnerShowFormat.SelectedIndexChanged += new System.EventHandler(this.comboBoxOwnerShowFormat_SelectedIndexChanged);
             // 
@@ -236,7 +204,7 @@
             this.comboBoxRowHeight.FormattingEnabled = true;
             this.comboBoxRowHeight.Location = new System.Drawing.Point(103, 91);
             this.comboBoxRowHeight.Name = "comboBoxRowHeight";
-            this.comboBoxRowHeight.Size = new System.Drawing.Size(89, 25);
+            this.comboBoxRowHeight.Size = new System.Drawing.Size(130, 25);
             this.comboBoxRowHeight.TabIndex = 0;
             this.comboBoxRowHeight.SelectedIndexChanged += new System.EventHandler(this.comboBoxRowHeight_SelectedIndexChanged);
             // 
@@ -249,165 +217,11 @@
             this.label17.TabIndex = 0;
             this.label17.Text = "Row Height:";
             // 
-            // tabPageComPorts
-            // 
-            this.tabPageComPorts.Controls.Add(this.btnClearPorts);
-            this.tabPageComPorts.Controls.Add(this.btnResumePort);
-            this.tabPageComPorts.Controls.Add(this.btnRemovePort);
-            this.tabPageComPorts.Controls.Add(this.lboxRemovedPorts);
-            this.tabPageComPorts.Controls.Add(this.lboxSelectedPorts);
-            this.tabPageComPorts.Controls.Add(this.groupBox5);
-            this.tabPageComPorts.Controls.Add(this.label2);
-            this.tabPageComPorts.Controls.Add(this.label1);
-            this.tabPageComPorts.Location = new System.Drawing.Point(4, 26);
-            this.tabPageComPorts.Name = "tabPageComPorts";
-            this.tabPageComPorts.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageComPorts.Size = new System.Drawing.Size(513, 341);
-            this.tabPageComPorts.TabIndex = 0;
-            this.tabPageComPorts.Text = "COM Ports";
-            this.tabPageComPorts.UseVisualStyleBackColor = true;
-            // 
-            // btnClearPorts
-            // 
-            this.btnClearPorts.Location = new System.Drawing.Point(337, 294);
-            this.btnClearPorts.Name = "btnClearPorts";
-            this.btnClearPorts.Size = new System.Drawing.Size(54, 32);
-            this.btnClearPorts.TabIndex = 2;
-            this.btnClearPorts.Text = "Clear";
-            this.btnClearPorts.UseVisualStyleBackColor = true;
-            this.btnClearPorts.Click += new System.EventHandler(this.btnClearPorts_Click_1);
-            // 
-            // btnResumePort
-            // 
-            this.btnResumePort.Location = new System.Drawing.Point(337, 136);
-            this.btnResumePort.Name = "btnResumePort";
-            this.btnResumePort.Size = new System.Drawing.Size(54, 32);
-            this.btnResumePort.TabIndex = 1;
-            this.btnResumePort.Text = "<<";
-            this.btnResumePort.UseVisualStyleBackColor = true;
-            this.btnResumePort.Click += new System.EventHandler(this.btnResumePort_Click_1);
-            // 
-            // btnRemovePort
-            // 
-            this.btnRemovePort.Location = new System.Drawing.Point(337, 93);
-            this.btnRemovePort.Name = "btnRemovePort";
-            this.btnRemovePort.Size = new System.Drawing.Size(54, 32);
-            this.btnRemovePort.TabIndex = 0;
-            this.btnRemovePort.Text = ">>";
-            this.btnRemovePort.UseVisualStyleBackColor = true;
-            this.btnRemovePort.Click += new System.EventHandler(this.btnRemovePort_Click);
-            // 
-            // lboxRemovedPorts
-            // 
-            this.lboxRemovedPorts.FormattingEnabled = true;
-            this.lboxRemovedPorts.ItemHeight = 17;
-            this.lboxRemovedPorts.Location = new System.Drawing.Point(397, 33);
-            this.lboxRemovedPorts.Name = "lboxRemovedPorts";
-            this.lboxRemovedPorts.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lboxRemovedPorts.Size = new System.Drawing.Size(90, 293);
-            this.lboxRemovedPorts.TabIndex = 23;
-            // 
-            // lboxSelectedPorts
-            // 
-            this.lboxSelectedPorts.FormattingEnabled = true;
-            this.lboxSelectedPorts.ItemHeight = 17;
-            this.lboxSelectedPorts.Location = new System.Drawing.Point(241, 33);
-            this.lboxSelectedPorts.Name = "lboxSelectedPorts";
-            this.lboxSelectedPorts.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lboxSelectedPorts.Size = new System.Drawing.Size(90, 293);
-            this.lboxSelectedPorts.TabIndex = 24;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.nudPortStart);
-            this.groupBox5.Controls.Add(this.nudPortEnd);
-            this.groupBox5.Controls.Add(this.label16);
-            this.groupBox5.Controls.Add(this.tboxPortSingleAddInput);
-            this.groupBox5.Controls.Add(this.btnPortsSingleAdd);
-            this.groupBox5.Controls.Add(this.btnPortsRangeAdd);
-            this.groupBox5.Location = new System.Drawing.Point(10, 19);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(219, 93);
-            this.groupBox5.TabIndex = 25;
-            this.groupBox5.TabStop = false;
-            // 
-            // nudPortStart
-            // 
-            this.nudPortStart.Location = new System.Drawing.Point(9, 18);
-            this.nudPortStart.Name = "nudPortStart";
-            this.nudPortStart.Size = new System.Drawing.Size(54, 23);
-            this.nudPortStart.TabIndex = 0;
-            // 
-            // nudPortEnd
-            // 
-            this.nudPortEnd.Location = new System.Drawing.Point(79, 18);
-            this.nudPortEnd.Name = "nudPortEnd";
-            this.nudPortEnd.Size = new System.Drawing.Size(54, 23);
-            this.nudPortEnd.TabIndex = 1;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(65, 21);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(13, 17);
-            this.label16.TabIndex = 5;
-            this.label16.Text = "-";
-            // 
-            // tboxPortSingleAddInput
-            // 
-            this.tboxPortSingleAddInput.Location = new System.Drawing.Point(9, 59);
-            this.tboxPortSingleAddInput.Name = "tboxPortSingleAddInput";
-            this.tboxPortSingleAddInput.Size = new System.Drawing.Size(124, 23);
-            this.tboxPortSingleAddInput.TabIndex = 3;
-            // 
-            // btnPortsSingleAdd
-            // 
-            this.btnPortsSingleAdd.Location = new System.Drawing.Point(139, 54);
-            this.btnPortsSingleAdd.Name = "btnPortsSingleAdd";
-            this.btnPortsSingleAdd.Size = new System.Drawing.Size(72, 32);
-            this.btnPortsSingleAdd.TabIndex = 4;
-            this.btnPortsSingleAdd.Text = "Add";
-            this.btnPortsSingleAdd.UseVisualStyleBackColor = true;
-            this.btnPortsSingleAdd.Click += new System.EventHandler(this.btnPortsSingleAdd_Click);
-            // 
-            // btnPortsRangeAdd
-            // 
-            this.btnPortsRangeAdd.Location = new System.Drawing.Point(139, 13);
-            this.btnPortsRangeAdd.Name = "btnPortsRangeAdd";
-            this.btnPortsRangeAdd.Size = new System.Drawing.Size(72, 32);
-            this.btnPortsRangeAdd.TabIndex = 2;
-            this.btnPortsRangeAdd.Text = "+Range";
-            this.btnPortsRangeAdd.UseVisualStyleBackColor = true;
-            this.btnPortsRangeAdd.Click += new System.EventHandler(this.btnPortsRangeAdd_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(394, 10);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 17);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "Removed:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(238, 11);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 17);
-            this.label1.TabIndex = 27;
-            this.label1.Text = "Selected:";
-            // 
             // tabPageSuspectProc
             // 
-            this.tabPageSuspectProc.Controls.Add(this.btnAddSerialDevicePattern);
             this.tabPageSuspectProc.Controls.Add(this.btnAddProcName);
-            this.tabPageSuspectProc.Controls.Add(this.tboxSerialDevicePattern);
             this.tabPageSuspectProc.Controls.Add(this.tboxInputProcName);
-            this.tabPageSuspectProc.Controls.Add(this.label15);
             this.tabPageSuspectProc.Controls.Add(this.label3);
-            this.tabPageSuspectProc.Controls.Add(this.lboxSerialDeviceNamePatterns);
             this.tabPageSuspectProc.Controls.Add(this.lboxSuspectProcNames);
             this.tabPageSuspectProc.Location = new System.Drawing.Point(4, 26);
             this.tabPageSuspectProc.Name = "tabPageSuspectProc";
@@ -417,19 +231,9 @@
             this.tabPageSuspectProc.Text = "Suspect Proc.";
             this.tabPageSuspectProc.UseVisualStyleBackColor = true;
             // 
-            // btnAddSerialDevicePattern
-            // 
-            this.btnAddSerialDevicePattern.Location = new System.Drawing.Point(429, 283);
-            this.btnAddSerialDevicePattern.Name = "btnAddSerialDevicePattern";
-            this.btnAddSerialDevicePattern.Size = new System.Drawing.Size(42, 32);
-            this.btnAddSerialDevicePattern.TabIndex = 3;
-            this.btnAddSerialDevicePattern.Text = "ADD";
-            this.btnAddSerialDevicePattern.UseVisualStyleBackColor = true;
-            this.btnAddSerialDevicePattern.Click += new System.EventHandler(this.btnAddSerialDevicePattern_Click);
-            // 
             // btnAddProcName
             // 
-            this.btnAddProcName.Location = new System.Drawing.Point(152, 283);
+            this.btnAddProcName.Location = new System.Drawing.Point(288, 80);
             this.btnAddProcName.Name = "btnAddProcName";
             this.btnAddProcName.Size = new System.Drawing.Size(42, 32);
             this.btnAddProcName.TabIndex = 1;
@@ -437,28 +241,12 @@
             this.btnAddProcName.UseVisualStyleBackColor = true;
             this.btnAddProcName.Click += new System.EventHandler(this.btnAddProcName_Click);
             // 
-            // tboxSerialDevicePattern
-            // 
-            this.tboxSerialDevicePattern.Location = new System.Drawing.Point(293, 288);
-            this.tboxSerialDevicePattern.Name = "tboxSerialDevicePattern";
-            this.tboxSerialDevicePattern.Size = new System.Drawing.Size(130, 23);
-            this.tboxSerialDevicePattern.TabIndex = 2;
-            // 
             // tboxInputProcName
             // 
-            this.tboxInputProcName.Location = new System.Drawing.Point(16, 288);
+            this.tboxInputProcName.Location = new System.Drawing.Point(200, 51);
             this.tboxInputProcName.Name = "tboxInputProcName";
             this.tboxInputProcName.Size = new System.Drawing.Size(130, 23);
             this.tboxInputProcName.TabIndex = 0;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(290, 11);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(177, 34);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "The patterns of serial device \r\nfile name:";
             // 
             // label3
             // 
@@ -469,17 +257,17 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "The names of process that may \r\nopen the serial port:";
             // 
-            // lboxSerialDeviceNamePatterns
+            // lboxSuspectProcNames
             // 
-            this.lboxSerialDeviceNamePatterns.ContextMenuStrip = this.ctxMenuListBoxSuspectProcNames;
-            this.lboxSerialDeviceNamePatterns.FormattingEnabled = true;
-            this.lboxSerialDeviceNamePatterns.ItemHeight = 17;
-            this.lboxSerialDeviceNamePatterns.Location = new System.Drawing.Point(293, 51);
-            this.lboxSerialDeviceNamePatterns.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.lboxSerialDeviceNamePatterns.Name = "lboxSerialDeviceNamePatterns";
-            this.lboxSerialDeviceNamePatterns.Size = new System.Drawing.Size(178, 225);
-            this.lboxSerialDeviceNamePatterns.TabIndex = 4;
-            this.lboxSerialDeviceNamePatterns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lboxSuspectProcNamesOrPatterns_KeyDown);
+            this.lboxSuspectProcNames.ContextMenuStrip = this.ctxMenuListBoxSuspectProcNames;
+            this.lboxSuspectProcNames.FormattingEnabled = true;
+            this.lboxSuspectProcNames.ItemHeight = 17;
+            this.lboxSuspectProcNames.Location = new System.Drawing.Point(16, 51);
+            this.lboxSuspectProcNames.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.lboxSuspectProcNames.Name = "lboxSuspectProcNames";
+            this.lboxSuspectProcNames.Size = new System.Drawing.Size(178, 276);
+            this.lboxSuspectProcNames.TabIndex = 4;
+            this.lboxSuspectProcNames.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lboxSuspectProcNamesOrPatterns_KeyDown);
             // 
             // ctxMenuListBoxSuspectProcNames
             // 
@@ -495,22 +283,8 @@
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
-            // lboxSuspectProcNames
-            // 
-            this.lboxSuspectProcNames.ContextMenuStrip = this.ctxMenuListBoxSuspectProcNames;
-            this.lboxSuspectProcNames.FormattingEnabled = true;
-            this.lboxSuspectProcNames.ItemHeight = 17;
-            this.lboxSuspectProcNames.Location = new System.Drawing.Point(16, 51);
-            this.lboxSuspectProcNames.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.lboxSuspectProcNames.Name = "lboxSuspectProcNames";
-            this.lboxSuspectProcNames.Size = new System.Drawing.Size(178, 225);
-            this.lboxSuspectProcNames.TabIndex = 4;
-            this.lboxSuspectProcNames.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lboxSuspectProcNamesOrPatterns_KeyDown);
-            // 
             // tabPageDeviceMap
             // 
-            this.tabPageDeviceMap.Controls.Add(this.btnBuildDeviceFileNameMap);
-            this.tabPageDeviceMap.Controls.Add(this.groupBox1);
             this.tabPageDeviceMap.Controls.Add(this.listViewDeviceMapTable);
             this.tabPageDeviceMap.Location = new System.Drawing.Point(4, 26);
             this.tabPageDeviceMap.Name = "tabPageDeviceMap";
@@ -519,84 +293,6 @@
             this.tabPageDeviceMap.TabIndex = 2;
             this.tabPageDeviceMap.Text = "Map Table";
             this.tabPageDeviceMap.UseVisualStyleBackColor = true;
-            // 
-            // btnBuildDeviceFileNameMap
-            // 
-            this.btnBuildDeviceFileNameMap.Location = new System.Drawing.Point(310, 152);
-            this.btnBuildDeviceFileNameMap.Name = "btnBuildDeviceFileNameMap";
-            this.btnBuildDeviceFileNameMap.Size = new System.Drawing.Size(75, 33);
-            this.btnBuildDeviceFileNameMap.TabIndex = 0;
-            this.btnBuildDeviceFileNameMap.Text = "Build";
-            this.btnBuildDeviceFileNameMap.UseVisualStyleBackColor = true;
-            this.btnBuildDeviceFileNameMap.Click += new System.EventHandler(this.btnBuildDeviceFileNameMap_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.btnCancleUpdatePortDeviceMapEntry);
-            this.groupBox1.Controls.Add(this.btnUpdateOrAdd);
-            this.groupBox1.Controls.Add(this.tboxDeviceFileName);
-            this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.tboxPort);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox1.Location = new System.Drawing.Point(307, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 140);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            // 
-            // btnCancleUpdatePortDeviceMapEntry
-            // 
-            this.btnCancleUpdatePortDeviceMapEntry.Location = new System.Drawing.Point(6, 97);
-            this.btnCancleUpdatePortDeviceMapEntry.Name = "btnCancleUpdatePortDeviceMapEntry";
-            this.btnCancleUpdatePortDeviceMapEntry.Size = new System.Drawing.Size(75, 33);
-            this.btnCancleUpdatePortDeviceMapEntry.TabIndex = 2;
-            this.btnCancleUpdatePortDeviceMapEntry.Text = "Cancle";
-            this.btnCancleUpdatePortDeviceMapEntry.UseVisualStyleBackColor = true;
-            this.btnCancleUpdatePortDeviceMapEntry.Click += new System.EventHandler(this.btnCancleUpdatePortDeviceMapEntry_Click);
-            // 
-            // btnUpdateOrAdd
-            // 
-            this.btnUpdateOrAdd.Location = new System.Drawing.Point(122, 97);
-            this.btnUpdateOrAdd.Name = "btnUpdateOrAdd";
-            this.btnUpdateOrAdd.Size = new System.Drawing.Size(75, 33);
-            this.btnUpdateOrAdd.TabIndex = 3;
-            this.btnUpdateOrAdd.Text = "Update";
-            this.btnUpdateOrAdd.UseVisualStyleBackColor = true;
-            this.btnUpdateOrAdd.Click += new System.EventHandler(this.btnUpdateOrAdd_Click);
-            // 
-            // tboxDeviceFileName
-            // 
-            this.tboxDeviceFileName.Location = new System.Drawing.Point(6, 68);
-            this.tboxDeviceFileName.Name = "tboxDeviceFileName";
-            this.tboxDeviceFileName.Size = new System.Drawing.Size(191, 23);
-            this.tboxDeviceFileName.TabIndex = 1;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(3, 48);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(111, 17);
-            this.label14.TabIndex = 0;
-            this.label14.Text = "Device File Name:";
-            // 
-            // tboxPort
-            // 
-            this.tboxPort.Enabled = false;
-            this.tboxPort.Location = new System.Drawing.Point(44, 16);
-            this.tboxPort.Name = "tboxPort";
-            this.tboxPort.Size = new System.Drawing.Size(81, 23);
-            this.tboxPort.TabIndex = 0;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 19);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 17);
-            this.label7.TabIndex = 0;
-            this.label7.Text = "Port:";
             // 
             // listViewDeviceMapTable
             // 
@@ -609,8 +305,6 @@
             this.listViewDeviceMapTable.TabIndex = 0;
             this.listViewDeviceMapTable.UseCompatibleStateImageBehavior = false;
             this.listViewDeviceMapTable.View = System.Windows.Forms.View.Details;
-            this.listViewDeviceMapTable.DoubleClick += new System.EventHandler(this.listViewDeviceMapTable_DoubleClick);
-            this.listViewDeviceMapTable.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewDeviceMapTable_KeyDown);
             // 
             // columnHeaderPort
             // 
@@ -750,6 +444,7 @@
             this.listViewOwnerTranslate.UseCompatibleStateImageBehavior = false;
             this.listViewOwnerTranslate.View = System.Windows.Forms.View.Details;
             this.listViewOwnerTranslate.SelectedIndexChanged += new System.EventHandler(this.listViewOwnerTranslate_SelectedIndexChanged);
+            this.listViewOwnerTranslate.DoubleClick += new System.EventHandler(this.listViewOwnerTranslate_DoubleClick);
             this.listViewOwnerTranslate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewOwnerTranslate_KeyDown);
             // 
             // columnHeaderDomainUser
@@ -939,18 +634,10 @@
             this.groupBoxRefreshSetting.ResumeLayout(false);
             this.groupBoxRefreshSetting.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.upDownRefreshInterval)).EndInit();
-            this.tabPageComPorts.ResumeLayout(false);
-            this.tabPageComPorts.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPortStart)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPortEnd)).EndInit();
             this.tabPageSuspectProc.ResumeLayout(false);
             this.tabPageSuspectProc.PerformLayout();
             this.ctxMenuListBoxSuspectProcNames.ResumeLayout(false);
             this.tabPageDeviceMap.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.tabPageOwner.ResumeLayout(false);
             this.groupOwnerTranslateInfo.ResumeLayout(false);
             this.groupOwnerTranslateInfo.PerformLayout();
@@ -964,26 +651,11 @@
         #endregion
 
         private System.Windows.Forms.TabControl tabCtrlSetting;
-        private System.Windows.Forms.TabPage tabPageComPorts;
         private System.Windows.Forms.TabPage tabPageSuspectProc;
         private System.Windows.Forms.TabPage tabPageDeviceMap;
         private System.Windows.Forms.TabPage tabPageGeneral;
         private System.Windows.Forms.TabPage tabPageAbout;
-        private System.Windows.Forms.Button btnClearPorts;
-        private System.Windows.Forms.Button btnResumePort;
-        private System.Windows.Forms.Button btnRemovePort;
-        private System.Windows.Forms.ListBox lboxRemovedPorts;
-        private System.Windows.Forms.ListBox lboxSelectedPorts;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.NumericUpDown nudPortStart;
-        private System.Windows.Forms.NumericUpDown nudPortEnd;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox tboxPortSingleAddInput;
-        private System.Windows.Forms.Button btnPortsSingleAdd;
-        private System.Windows.Forms.Button btnPortsRangeAdd;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnAddProcName;
         private System.Windows.Forms.TextBox tboxInputProcName;
@@ -1001,20 +673,8 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ListView listViewDeviceMapTable;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox tboxDeviceFileName;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox tboxPort;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button btnUpdateOrAdd;
         private System.Windows.Forms.ColumnHeader columnHeaderPort;
         private System.Windows.Forms.ColumnHeader columnHeaderDeviceFileName;
-        private System.Windows.Forms.Button btnBuildDeviceFileNameMap;
-        private System.Windows.Forms.Button btnCancleUpdatePortDeviceMapEntry;
-        private System.Windows.Forms.Button btnAddSerialDevicePattern;
-        private System.Windows.Forms.TextBox tboxSerialDevicePattern;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.ListBox lboxSerialDeviceNamePatterns;
         private System.Windows.Forms.ContextMenuStrip ctxMenuListBoxSuspectProcNames;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.Label label17;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.IO.Ports;
+using Microsoft.Win32;
 
 namespace ComOwnerSpy
 {
@@ -12,7 +13,6 @@ namespace ComOwnerSpy
     {
         private static Dictionary<string, string> _tblDevicePort; //Key: DeviceName, Value: Port
         private static Dictionary<string, string> _tblPortDevice; //Key: Port, Value: DeviceName
-        private static IProgressEvent _progressHandle = null;
 
         static DeviceMapTable()
         {
@@ -23,6 +23,21 @@ namespace ComOwnerSpy
         public static Dictionary<string, string> RawTable
         {
             get { return _tblPortDevice; }
+        }
+
+        public static int Count
+        {
+            get { return (_tblDevicePort != null ? _tblDevicePort.Count : 0); }
+        }
+
+        public static string[] AllPorts
+        {
+            get { return (_tblPortDevice != null ? _tblPortDevice.Keys.ToArray() : null); }
+        }
+
+        public static string[] AllDeviceNames
+        {
+            get { return (_tblPortDevice != null ? _tblPortDevice.Values.ToArray() : null); }
         }
 
         public static bool ContainsDeviceName(string devName)
@@ -45,12 +60,6 @@ namespace ComOwnerSpy
             }
         }
 
-        static public IProgressEvent ProgressEvent
-        {
-            get { return _progressHandle; }
-            set { _progressHandle = value; }
-        }
-
         public static void Add(string port, string deviceName)
         {
             _tblDevicePort.Add(deviceName, port);
@@ -71,7 +80,7 @@ namespace ComOwnerSpy
                 return null;
         }
 
-        public static string GetDevice(string port)
+        public static string GetDeviceName(string port)
         {
             if (_tblPortDevice.ContainsKey(port))
                 return _tblPortDevice[port];
@@ -96,89 +105,44 @@ namespace ComOwnerSpy
             return al;
         }
 
-        public static void Load(string path)
+        public static void BuildFromRegistry()
         {
-            StreamReader fs = null;
+            RegistryKey key = Registry.LocalMachine;
+            RegistryKey comKey = null;
             try
             {
-                fs = File.OpenText(path);
-                fs.ReadLine(); //version number
-                Clear();
-                while (!fs.EndOfStream)
-                {
-                    string line = fs.ReadLine();
-                    int idx = line.IndexOf(':');
-                    if (idx > 0 || idx < (line.Length - 1))
-                    {
-                        Add(line.Substring(0, idx), line.Substring(idx + 1));
-                    }
-                }
+                comKey = key.OpenSubKey("HARDWARE\\DEVICEMAP\\SERIALCOMM");
+                if (comKey == null)
+                    throw new Exception("Cannot find the serial port device map from registry \"HARDWARE\\DEVICEMAP\\SERIALCOMM\"!");
             }
             catch
             {
-                Clear();
+                throw new Exception("Cannot find the serial port device map from registry \"HARDWARE\\DEVICEMAP\\SERIALCOMM\"!");
             }
-            finally
+
+            string[] valNames = comKey.GetValueNames();
+            SortedDictionary<uint, string> portTable = new SortedDictionary<uint, string>(); //sort keys by port number
+            foreach (string name in valNames)
             {
-                if (fs != null)
-                    fs.Close();
-            }
-        }
-
-        public static void BuildTable(string[] allPorts, ref ArrayList errorPortsInfo)
-        {
-            ArrayList errPorts = new ArrayList();
-
-            if (_progressHandle != null)
-                _progressHandle.ProgressUpdate("0/" + allPorts.Length);
-
-            ProcessFileHandle proc = new ProcessFileHandle(System.Diagnostics.Process.GetCurrentProcess().Id);
-            Clear();
-
-            for (int i = 0; i < allPorts.Length; i++)
-            {
-                string port = allPorts[i];
+                string val = (string)comKey.GetValue(name);
                 try
                 {
-                    SerialPort sp = new SerialPort("COM" + port);
-                    sp.Open();
-                    ArrayList handles = proc.GetComFileHandle();
-                    if (handles != null && handles.Count > 0)
-                    {
-                        Add(port, handles[0].ToString());
-                    }
-                    sp.Close();
+                    uint port = uint.Parse(val.Substring("COM".Length)); //extract the port number, remove "COM" prefix
+                    portTable.Add(port, name);
                 }
                 catch
                 {
-                    /*
-                    if (port >= 29 && port <= 92)
-                    {
-                        _table.Add("\\Device\\mxuport00" + (port-29).ToString("D2"), port.ToString());
-                    }
-                    */
-                    errPorts.Add(port);
-                }
-                finally
-                {
-                    if (_progressHandle != null)
-                        _progressHandle.ProgressUpdate(i.ToString() + "/" + allPorts.Length);
+                    continue;
                 }
             }
-            errorPortsInfo = errPorts;
-        }
 
-        public static void BuildTableFile(string path, string[] allPorts, ref ArrayList errorPortsInfo)
-        {
-            StreamWriter sw = new StreamWriter(path);
-            BuildTable(allPorts, ref errorPortsInfo);
-            sw.WriteLine("version=1.0");
-            foreach (string key in _tblPortDevice.Keys)
+            Clear();
+            foreach (uint port in portTable.Keys)
             {
-                sw.WriteLine(key + ":" + _tblPortDevice[key]);
+                string strPort = port.ToString();
+                string val = portTable[port];
+                Add(strPort, val);
             }
-            sw.Flush();
-            sw.Close();
         }
     }
 }

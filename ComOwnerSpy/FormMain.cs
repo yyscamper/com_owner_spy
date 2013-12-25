@@ -39,7 +39,7 @@ namespace ComOwnerSpy
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            this.Size = new Size(900, 675);
+            this.Size = new Size(800, 520);
 
             Version appVer = new Version(Application.ProductVersion);
             this.Text = "COM Owner Spy (" + appVer.Major + "." + appVer.Minor + ")";
@@ -233,15 +233,40 @@ namespace ComOwnerSpy
             if (proc == null)
                 return;
 
-            string msg = "Are you sure want to kill the process (Name=" + proc.ProcessName + ",ID=" + proc.Id + ")?";
+            ArrayList otherPortsInSameProc = ComHandle.GetOtherPortsInSameProcess(item);
 
-            if (DialogResult.Yes == yMessageBox.ShowConfirm(this, msg, "Confirm Kill Process"))
+            if (DialogResult.Yes == yMessageBox.ShowKillProcConfirm(item, otherPortsInSameProc,
+                this, "Confirm Kill Process"))
             {
-                if (DialogResult.Yes == yMessageBox.ShowConfirm(this, msg, "Confirm Kill Process"))
+                if (DialogResult.Yes == yMessageBox.ShowKillProcConfirm(item, otherPortsInSameProc,
+                    this, "Confirm Kill Process"))
                 {
                     try
                     {
                         proc.Kill();
+
+                        if (item.GuiItem != null)
+                        {
+                            if (item.Update(string.Empty, string.Empty, string.Empty, -1))
+                            {
+                                item.GuiItem.SubItems[1].Text =
+                                    item.GuiItem.SubItems[2].Text =
+                                        item.GuiItem.SubItems[3].Text = string.Empty;
+                            }
+                        }
+
+                        foreach (ComItem p in otherPortsInSameProc)
+                        {
+                            if (p.GuiItem != null)
+                            {
+                                if (p.Update(string.Empty, string.Empty, string.Empty, -1))
+                                {
+                                    p.GuiItem.SubItems[1].Text =
+                                        p.GuiItem.SubItems[2].Text =
+                                            p.GuiItem.SubItems[3].Text = string.Empty;
+                                }
+                            }
+                        }
                     }
                     catch (Exception err)
                     {
@@ -333,6 +358,7 @@ namespace ComOwnerSpy
 
         public void UpdateOwnerFormat(OwnerShowFormat fmt)
         {
+            AppConfig.OwnerFormat = fmt;
             Dictionary<string, ComItem> allComs = ComHandle.AllComs;
             foreach (ComItem item in allComs.Values)
             {

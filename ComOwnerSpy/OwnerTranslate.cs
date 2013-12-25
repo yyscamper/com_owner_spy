@@ -78,6 +78,26 @@ namespace ComOwnerSpy
 
         public Owner()
         {
+
+        }
+
+        public Owner Clone()
+        {
+            Owner p = new Owner();
+            p.Domain = (string)this.Domain.Clone();
+            p.User = (string)this.User.Clone();
+            p.FullName = (string)this.FullName.Clone();
+            p.ShortName = (string)this.ShortName.Clone();
+            p.Phone = (string)this.Phone.Clone();
+
+            return p;
+        }
+
+        public bool Equals(Owner p, StringComparison cmp = StringComparison.InvariantCultureIgnoreCase)
+        {
+            return (p.Domain.Equals(this.Domain, cmp) && p.User.Equals(this.User, cmp)
+                    && p.FullName.Equals(this.FullName, cmp) && p.ShortName.Equals(this.ShortName, cmp)
+                    && p.Phone.Equals(this.Phone, cmp));
         }
     }
     static class OwnerTranslate
@@ -124,6 +144,11 @@ namespace ComOwnerSpy
             domainuser = domainuser.ToLower();
             if (_allOwners.ContainsKey(domainuser))
                 _allOwners.Remove(domainuser);
+        }
+
+        public static void Clear()
+        {
+            _allOwners.Clear();
         }
 
         public static SortedDictionary<string, Owner> AllOwners
@@ -200,9 +225,8 @@ namespace ComOwnerSpy
                 }
                 fs.Flush();
             }
-            catch (Exception err)
+            catch
             {
-
             }
             finally
             {

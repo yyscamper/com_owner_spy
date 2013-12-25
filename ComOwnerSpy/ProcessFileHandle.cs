@@ -10,6 +10,7 @@ namespace ComOwnerSpy
     public class ProcessFileHandle
     {
         int _procId = -1;
+
         public ProcessFileHandle(int procId)
         {
             _procId = procId;
@@ -18,37 +19,15 @@ namespace ComOwnerSpy
         public ArrayList ParseCmdStr(string strCmd)
         {
             ArrayList handleList = new ArrayList();
-            int startIndex = 0;
-            int idx = 0;
-            int lstart, lend;
-            int patternLen = AppConfig.MinSerialDeviceNamePatternLength;
-            string[] allPatterns = AppConfig.SerialDeviceNamePatterns;
 
-            while (startIndex < strCmd.Length)
+            string[] devNames = DeviceMapTable.AllDeviceNames;
+            foreach (string devName in devNames)
             {
-                lstart = 0xffffff;
-                foreach (string pattern in allPatterns)
+                int idx = strCmd.IndexOf(devName, 0);
+                if (idx >= 0 && (strCmd[idx + devName.Length] == '\r' || strCmd[idx + devName.Length] == '\n'))
                 {
-                    idx = strCmd.IndexOf(pattern, startIndex);
-                    if (idx >=0 && lstart > idx)
-                    {
-                        lstart = idx;
-                    }
+                    handleList.Add(devName);
                 }
-                if (lstart == 0xffffff) //Don't find any patterns
-                    break;
-
-                lend = lstart + patternLen;
-                while (true) //find the end of line "\r\n"
-                {
-                    if (lend == strCmd.Length - 1)
-                        break;
-
-                    if (strCmd[++lend] == '\r')
-                        break;
-                }
-                handleList.Add(strCmd.Substring(lstart, lend-lstart));
-                startIndex = lend + 2; //ignore the "\r\n"
             }
 
             return handleList;
@@ -75,32 +54,6 @@ namespace ComOwnerSpy
             cmdProc.Close();
 
             return ParseCmdStr(strCmd);
-
-
-            /*
-
-            string[] cmdResultArr = strCmd.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-
-
-            foreach (string str in cmdResultArr)
-            {
-                string[] itemArr = str.Split(new char[] { ':', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                if (itemArr.Length > 2)
-                {
-
-                    string handleName = itemArr[itemArr.Length - 1];
-                    if (handleName.StartsWith("\\Device\\", StringComparison.InvariantCultureIgnoreCase)
-                        && (handleName.IndexOf("serial", StringComparison.InvariantCultureIgnoreCase) > 0
-                        || handleName.IndexOf("mxuport", StringComparison.InvariantCultureIgnoreCase) > 0))
-                    {
-                        handleList.Add(handleName);
-                    }
-                }
-            }
-            return handleList;
-             * 
-             * */
         }
 
     }

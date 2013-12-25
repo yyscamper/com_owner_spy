@@ -120,6 +120,15 @@ namespace ComOwnerSpy
             get { return _allComs; }
         }
 
+        public static void SetPorts(string[] ports)
+        {
+            _allComs.Clear();
+            foreach (string port in ports)
+            {
+                _allComs.Add(port, new ComItem(port));
+            }
+        }
+
         public static void Add(ComItem item)
         {
             if (_allComs.ContainsKey(item.Port))
@@ -159,6 +168,21 @@ namespace ComOwnerSpy
             string[] allPorts = new string[_allComs.Keys.Count];
             _allComs.Keys.CopyTo(allPorts, 0);
             return allPorts;
+        }
+
+        public static ArrayList GetOtherPortsInSameProcess(ComItem item)
+        {
+            if (item.ProcessId < 0)
+                return null;
+
+            ArrayList al = new ArrayList();
+            foreach (ComItem ci in _allComs.Values)
+            {
+                if (ci.Port != item.Port && item.ProcessId == ci.ProcessId)
+                    al.Add(ci);
+            }
+
+            return al;
         }
     }
 }

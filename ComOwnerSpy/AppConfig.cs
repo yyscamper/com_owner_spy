@@ -12,9 +12,6 @@ namespace ComOwnerSpy
     {
         private static string[] _allSuspectProcessNames;
         private static bool _flagOwnerWithDomain;
-        private static string[] _serialDeviceNamePatterns;
-        private static int _minSerialDeviceNamePatternLength;
-        private static string _deviceMapFilePath;
         private static int _rowHeight;
         private static bool _enableAutoRefreshAtStartup;
         private static int _autoRefreshInternval;
@@ -28,10 +25,7 @@ namespace ComOwnerSpy
         public static void ResetDefault()
         {
             _allSuspectProcessNames = new string[] { "SecureCRT", "ttermpro", "Multy-Term" };
-            _deviceMapFilePath = System.Environment.CurrentDirectory + "\\config\\serial_devices.map";
             _flagOwnerWithDomain = true;
-            _serialDeviceNamePatterns = new string[] { "\\Device\\Serial", "\\Device\\mxuport" };
-            _minSerialDeviceNamePatternLength = Math.Min("\\Device\\Serial".Length, "\\Device\\mxuport".Length);
             _rowHeight = 24;
             _enableAutoRefreshAtStartup = true;
             _autoRefreshInternval = 5;
@@ -60,34 +54,6 @@ namespace ComOwnerSpy
         {
             get { return _rowHeight; }
             set { _rowHeight = value; }
-        }
-
-        public static string DeviceMapFilePath
-        {
-            get { return _deviceMapFilePath; }
-        }
-
-        public static string[] SerialDeviceNamePatterns
-        {
-            get { return _serialDeviceNamePatterns; }
-            set 
-            {
-                if (value == null)
-                    return;
-                _serialDeviceNamePatterns = value;
-                int minLen = 0xffffff;
-                foreach (string name in _serialDeviceNamePatterns)
-                {
-                    if (name.Length < minLen)
-                        minLen = name.Length;
-                }
-                _minSerialDeviceNamePatternLength = minLen;
-            }
-        }
-
-        public static int MinSerialDeviceNamePatternLength
-        {
-            get { return _minSerialDeviceNamePatternLength; }
         }
 
         public static bool OwnerWithDomain
@@ -141,27 +107,22 @@ namespace ComOwnerSpy
             }
 
             string line;
-            ComHandle.Clear();
+            //ComHandle.Clear();
             while (!reader.EndOfStream)
             {
                 line = reader.ReadLine();
                 if (line.StartsWith("Ports:"))
                 {
-                    string[] ports = line.Substring("Ports:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string p in ports)
-                    {
-                        ComHandle.Add(new ComItem(p));
-                    }
+                    //string[] ports = line.Substring("Ports:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    //foreach (string p in ports)
+                    //{
+                    //    ComHandle.Add(new ComItem(p));
+                    //}
                 }
                 else if (line.StartsWith("SuspectProcessNames:"))
                 {
                     string[] names = line.Substring("SuspectProcessNames:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     _allSuspectProcessNames = names;
-                }
-                else if (line.StartsWith("SerialDeviceNamePatterns:"))
-                {
-                    string[] names = line.Substring("SerialDeviceNamePatterns:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    _serialDeviceNamePatterns = names;
                 }
                 else if (line.StartsWith("RowHeight:"))
                 {
@@ -226,7 +187,6 @@ namespace ComOwnerSpy
             writer.WriteLine("Version:" + Application.ProductVersion);
             writer.WriteLine("Ports:" + string.Join(",", ComHandle.GetAllPorts()));
             writer.WriteLine("SuspectProcessNames:" + string.Join(",", _allSuspectProcessNames));
-            writer.WriteLine("SerialDeviceNamePatterns:" + string.Join(",", _serialDeviceNamePatterns));
             writer.WriteLine("RowHeight:" + _rowHeight.ToString());
             writer.WriteLine("EnableAutoRefreshAtStartup:" + _enableAutoRefreshAtStartup.ToString());
             writer.WriteLine("AutoRefreshInternval:" + _autoRefreshInternval.ToString());
