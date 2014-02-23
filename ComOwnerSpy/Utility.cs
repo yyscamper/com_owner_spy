@@ -9,6 +9,22 @@ using System.Windows.Forms;
 
 namespace ComOwnerSpy
 {
+    public class StringContainer
+    {
+        public string _val;
+
+        public string Value
+        {
+            get {return _val; }
+            set {_val = value;}
+        }
+
+        public StringContainer(string s = null)
+        {
+            _val = s;
+        }
+    }
+
     public static class Utility
     {
         public static string GetProcessOwner(int processId, bool ownerWithDomain = true)
@@ -46,6 +62,7 @@ namespace ComOwnerSpy
 
         public static string GetPortOwner(string targetPort, ref string appName, ref Process ownProcess)
         {
+
             List<Process> listProcs = new List<Process>();
 
             Process[] allSecureCrtProcess = Process.GetProcessesByName("SecureCRT");
@@ -58,15 +75,17 @@ namespace ComOwnerSpy
 
             foreach (Process proc in listProcs)
             {
-                ArrayList handles = new ProcessFileHandle(proc.Id).GetComFileHandle();
-                ArrayList ports = DeviceMapTable.GetPorts(handles);
+                ArrayList handles = new HandleWrapper(proc.Id).GetComFileHandle();
+                ArrayList ports = ComPortControlTable.GetPorts(handles);
                 foreach (string port in ports)
                 {
                     if (port == targetPort)
                     {
                         try
                         {
-                            string owner = Utility.GetProcessOwner(proc.Id);
+                            //string owner = Utility.GetProcessOwner(proc.Id);
+                            string sid = null;
+                            string owner = ProcessOwnerFinder.GetProcessOwnerByPID(proc.Id, out sid);
                             if (allSecureCrtProcess.Contains(proc))
                                 appName = "SecureCRT";
                             else if (allTeraTermProcess.Contains(proc))
@@ -96,18 +115,6 @@ namespace ComOwnerSpy
         public static DialogResult ShowInfoDialog(string txt)
         {
             return MessageBox.Show(txt, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        public static bool ValidateDomainUser(string str) //validate whether the string is valid domain\user input
-        {
-            char[] seps = new char[] {'\\', '/'};
-
-            if (str == null || str.Length < 3)
-                return false;
-            int sindex = str.IndexOfAny(seps);
-            int eindex = str.LastIndexOfAny(seps);
-
-            return (sindex > 0 && sindex == eindex && sindex < str.Length - 1); //Only on seprator
         }
 
         public static OwnerShowFormat ParseOwnerShowFormat(string str)

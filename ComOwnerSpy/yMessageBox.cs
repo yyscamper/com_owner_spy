@@ -64,15 +64,15 @@ namespace ComOwnerSpy
 
             if (icon == MessageBoxIcon.Error)
             {
-                picBox.Image = Properties.Resources.imageError;
+                picBox.Image = Properties.Resources.error;
             }
             else if (icon == MessageBoxIcon.Question)
             {
-                picBox.Image = Properties.Resources.imageConfirm;
+                picBox.Image = Properties.Resources.confirm;
             }
             else if (icon == MessageBoxIcon.Information)
             {
-                picBox.Image = Properties.Resources.imageInfo;
+                picBox.Image = Properties.Resources.info;
             }
             else
             {
@@ -169,8 +169,8 @@ namespace ComOwnerSpy
         }
 
         public static DialogResult ShowKillProcConfirm(
-               ComItem item,
-               ArrayList otherPortsInProcess,
+               ComPortItem item,
+               List<ComPortItem> otherPortsInProcess,
                Control parent = null,
                string title = "Confirm",
                MessageBoxButtons btns = MessageBoxButtons.YesNo,
@@ -195,7 +195,7 @@ namespace ComOwnerSpy
 
                 msgBox.richBoxMessage.SelectionColor = Color.Red;
                 msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText("COM" + item.Port);
+                msgBox.richBoxMessage.AppendText(item.PortName);
 
                 msgBox.richBoxMessage.SelectionColor = Color.Black;
                 msgBox.richBoxMessage.SelectionFont = regularFont;
@@ -217,7 +217,7 @@ namespace ComOwnerSpy
 
                 msgBox.richBoxMessage.SelectionColor = Color.Red;
                 msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText("COM" + item.Port);
+                msgBox.richBoxMessage.AppendText(item.PortName);
 
                 msgBox.richBoxMessage.SelectionColor = Color.Black;
                 msgBox.richBoxMessage.SelectionFont = regularFont;
@@ -238,7 +238,7 @@ namespace ComOwnerSpy
                 for (int i = 0; i < otherPortsInProcess.Count; i++ )
                 {
                     msgBox.richBoxMessage.SelectionColor = Color.Red;
-                    msgBox.richBoxMessage.AppendText("COM" + ((ComItem)otherPortsInProcess[i]).Port);
+                    msgBox.richBoxMessage.AppendText(((ComPortItem)otherPortsInProcess[i]).PortName);
 
                     msgBox.richBoxMessage.SelectionColor = Color.Black;
                     if (i != otherPortsInProcess.Count - 1)

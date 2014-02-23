@@ -17,20 +17,17 @@ namespace ComOwnerSpy
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
             //build "Device Map" from registry
             try
             {
-                DeviceMapTable.BuildFromRegistry(); 
+                ThemeManager.Init();
+                ComPortControlTable.InitTable(); 
             }
             catch (Exception err)
             {
                 yMessageBox.ShowError(null, err.Message);
                 return;
             }
-
-            //set all ports
-            ComHandle.SetPorts(DeviceMapTable.AllPorts);
 
             //load config file
             try

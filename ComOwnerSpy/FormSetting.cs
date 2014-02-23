@@ -10,12 +10,12 @@ using System.Windows.Forms;
 
 namespace ComOwnerSpy
 {
-    public partial class FormSetting : Form
+    public partial class FormSetting : Form, IInputOwnerTranslate
     {       
-        private SortedSet<uint> m_selectedPorts = new SortedSet<uint>();
-        private SortedSet<uint> m_removedPorts = new SortedSet<uint>();
         private IGeneralEvent m_generalEventHandle = null;
-        private bool m_hasDoneSave = false;
+        private OwnerEntry m_selectedOwner = null;
+ 
+        //private bool m_hasDoneSave = false;
 
         #region form_action
 
@@ -23,13 +23,15 @@ namespace ComOwnerSpy
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterParent;
+            this.Icon = Properties.Resources.setting_icon;
 
             InitTabGeneral();
             InitTabComPort();
-            InitTabSuspectProc();
+            InitTabPatterns();
             InitTabAbout();
             InitTabDeviceNameFileMap();
             InitTabOwnerTranslate();
+            InitTabPageTheme();
 
             m_generalEventHandle = eventHandle;
         }
@@ -58,6 +60,7 @@ namespace ComOwnerSpy
             cboxEnableAutoRefreshAtStartup.Checked = AppConfig.EnableAutoRefreshAtStartup;
             upDownRefreshInterval.Enabled = cboxEnableAutoRefreshAtStartup.Checked;
             comboxBoxOwnerShowFormat.SelectedIndex = (int)AppConfig.OwnerFormat;
+            this.upDownRefreshInterval.ValueChanged += new System.EventHandler(this.upDownRefreshInterval_ValueChanged);
         }
 
         #endregion
@@ -66,72 +69,21 @@ namespace ComOwnerSpy
 
         private void InitTabComPort()
         {
-            m_selectedPorts.Clear();
-            m_removedPorts.Clear();
-
-            string[] allports = ComHandle.GetAllPorts();
-            foreach (string p in allports)
-            {
-                m_selectedPorts.Add(uint.Parse(p));
-            }
         }
 
-        #region tabSuspectProcs
+        #region tabPatterns
 
-        private void InitTabSuspectProc()
+        private void InitTabPatterns()
         {
-            lboxSuspectProcNames.Items.AddRange(AppConfig.AllSuspectProcessNames);
-        }
-
-        private void btnAddProcName_Click(object sender, EventArgs e)
-        {
-            string name = tboxInputProcName.Text.Trim();
-            if (name.Length <= 0)
-                return;
-
-            if (!lboxSuspectProcNames.Items.Contains(name))
+            foreach (string s in ComPortControlTable.DeviceNamePatterns)
             {
-                lboxSuspectProcNames.Items.Add(name);
-            }
-            else
-            {
-                MessageBox.Show(this, "The \"" + name + "\"has already be contained.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            tboxInputProcName.Text = string.Empty;
-        }
-
-        private void DoRemoveProcNameOrPattern(ListBox lbox)
-        {
-            int idx = lbox.SelectedIndex;
-            if (idx < 0)
-                return;
-            if (DialogResult.Yes == MessageBox.Show(this, "Are you sure want to delete process name \"" + lbox.Items[idx].ToString() + "\"?",
-                "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-            {
-                lbox.Items.RemoveAt(idx);
+                lboxPatterns.Items.Add(s);
             }
         }
 
         private void SaveTabSuspectProc()
         {
-            string[] arr = new string[lboxSuspectProcNames.Items.Count];
-            lboxSuspectProcNames.Items.CopyTo(arr, 0);
-            AppConfig.AllSuspectProcessNames = arr;
-
-            AppConfig.SaveGlobalConfig();
-        }
-
-        private void lboxSuspectProcNamesOrPatterns_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                DoRemoveProcNameOrPattern((ListBox)sender);
-            }
-        }
-
-        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DoRemoveProcNameOrPattern(lboxSuspectProcNames);
+            return;
         }
 
         #endregion
@@ -150,16 +102,15 @@ namespace ComOwnerSpy
 
         private void RefreshDevieNameMapTable()
         {
-            Dictionary<string, string> rawTable = DeviceMapTable.RawTable;
-            if (rawTable == null || rawTable.Count == 0)
+            ComPortItem[] allItems = ComPortControlTable.AllItems;
+            if (allItems == null || allItems.Length == 0)
                 return;
 
-            ListViewItem[] lvis = new ListViewItem[rawTable.Keys.Count];
+            ListViewItem[] lvis = new ListViewItem[allItems.Length];
             int i = 0;
-            foreach (string port in rawTable.Keys)
+            foreach (ComPortItem item in allItems)
             {
-                string devFileName = rawTable[port];
-                lvis[i++] = new ListViewItem(new string[] { port, devFileName }, port);
+                lvis[i++] = new ListViewItem(new string[] { item.PortName, item.DeviceName }, item.PortName);
             }
             listViewDeviceMapTable.Items.Clear();
             listViewDeviceMapTable.Items.AddRange(lvis);
@@ -180,16 +131,17 @@ namespace ComOwnerSpy
         private void InitTabOwnerTranslate()
         {
             listViewOwnerTranslate.FullRowSelect = true;
-            tboxDomainUser.Text = tboxOwnerFullName.Text = tboxOwnerShortName.Text = tboxOwnerPhone.Text = string.Empty;
-            btnDeleteOwnerTranslate.Enabled = false;
             RefreshTabOwnerTranslate();
+            picBoxDeleteOwner.Enabled = false;
+            picBoxEditOwner.Enabled = false;
+            picboxAddOwner.Enabled = true;
         }
 
         private void RefreshTabOwnerTranslate()
         {
-            SortedDictionary<string, Owner> allOwners = OwnerTranslate.AllOwners;
+            SortedDictionary<string, OwnerEntry> allOwners = OwnerTranslate.AllOwners;
             listViewOwnerTranslate.Items.Clear();
-            foreach (Owner owner in allOwners.Values)
+            foreach (OwnerEntry owner in allOwners.Values)
             {
                 ListViewItem litem = new ListViewItem(new string[] { owner.Key, owner.FullName, owner.ShortName, owner.Phone });
                 listViewOwnerTranslate.Items.Add(litem);
@@ -200,11 +152,13 @@ namespace ComOwnerSpy
         {
             if (listViewOwnerTranslate.SelectedItems.Count <= 0)
             {
-                btnDeleteOwnerTranslate.Enabled = false;
+                picBoxDeleteOwner.Enabled = false;
+                picBoxEditOwner.Enabled = false;
                 return;
             }
 
-            btnDeleteOwnerTranslate.Enabled = true;
+            picBoxDeleteOwner.Enabled = true;
+            picBoxEditOwner.Enabled = true;
         }
         
         private void SelectOwnerTranslateVisuable(string domainuser)
@@ -222,48 +176,9 @@ namespace ComOwnerSpy
 
         private void btnAddNewOwnerTranslate_Click(object sender, EventArgs e)
         {
-            string domainUser = tboxDomainUser.Text.Trim().ToLower();
-            if (!Utility.ValidateDomainUser(domainUser))
-            {
-                yMessageBox.ShowError(this, "Your input 'Domain\\User' format is not correct, it should be like corp\\abcd or my/bcd.");
-                return;
-            }
-
-            if (OwnerTranslate.Contains(domainUser))
-            {
-                yMessageBox.ShowConfirm(this, "Your input 'Domain\\User' has been contained! If you want to edit it, you should first delete then add a new one.");
-                return;
-            }
-
-            string fullName = tboxOwnerFullName.Text.Trim();
-            if (fullName.Length == 0)
-            {
-                yMessageBox.ShowError(this, "The 'FullName' should not be empty!");
-                return;
-            }
-
-            string shortName = tboxOwnerShortName.Text.Trim();
-            if (shortName.Length == 0)
-            {
-                yMessageBox.ShowError(this, "The 'ShortName' should not be empty!");
-                return;
-            }
-
-            Owner owner = new Owner(domainUser);
-            owner.FullName = fullName;
-            owner.ShortName = shortName;
-            owner.Phone = tboxOwnerPhone.Text.Trim();
-
-            OwnerTranslate.Add(owner);
-
-            RefreshTabOwnerTranslate();
-
-            SelectOwnerTranslateVisuable(domainUser);
-
-            tboxDomainUser.Text = tboxOwnerFullName.Text = tboxOwnerShortName.Text
-                = tboxOwnerPhone.Text = string.Empty;
-
-            tboxDomainUser.Focus();
+            FormInputOwnerTranslateItem inputTranslateItem = 
+                new FormInputOwnerTranslateItem(InputOwnerTranslateMode.Add, this, null);
+            inputTranslateItem.ShowDialog();
         }
 
         private void DeleteOwnerTranslate()
@@ -315,7 +230,7 @@ namespace ComOwnerSpy
         private void btnSave_Click(object sender, EventArgs e)
         {
             Save();
-            m_hasDoneSave = true;
+            //m_hasDoneSave = true;
             this.Close();
         }
 
@@ -362,22 +277,260 @@ namespace ComOwnerSpy
             }
         }
 
-        private void listViewOwnerTranslate_DoubleClick(object sender, EventArgs e)
+        private void EditOwnerTranslate()
         {
             if (listViewOwnerTranslate.SelectedItems.Count <= 0)
                 return;
 
             string key = listViewOwnerTranslate.SelectedItems[0].SubItems[0].Text;
-            Owner own = OwnerTranslate.AllOwners[key];
+            OwnerEntry own = OwnerTranslate.Get(key);
+            m_selectedOwner = own;
 
-            tboxDomainUser.Text = own.Domain + "\\" + own.User;
-            tboxOwnerFullName.Text = own.FullName;
-            tboxOwnerShortName.Text = own.ShortName;
-            tboxOwnerPhone.Text = own.Phone;
+            FormInputOwnerTranslateItem formInputTranslate =
+                new FormInputOwnerTranslateItem(InputOwnerTranslateMode.Edit, this, own);
+            formInputTranslate.ShowDialog();
+            m_selectedOwner = null;
+        }
 
-            RefreshTabOwnerTranslate();
+        private void listViewOwnerTranslate_DoubleClick(object sender, EventArgs e)
+        {
+            EditOwnerTranslate();
+        }
+
+        public void OnInputOwnerTranslateCompleted(InputOwnerTranslateMode mode, OwnerEntry owner)
+        {
+            if (mode == InputOwnerTranslateMode.Add)
+            {
+                OwnerTranslate.Add(owner);
+                RefreshTabOwnerTranslate();
+                SelectOwnerTranslateVisuable(owner.DomainUser);
+            }
+            else
+            {
+                if (m_selectedOwner != null)
+                {
+                    OwnerTranslate.Remove(m_selectedOwner.DomainUser);
+                    OwnerTranslate.Add(owner);
+                    RefreshTabOwnerTranslate();
+                    SelectOwnerTranslateVisuable(owner.DomainUser);
+                }
+            }
+        }
+
+        private void picboxAddOwner_Click(object sender, EventArgs e)
+        {
+            FormInputOwnerTranslateItem inputTranslateItem =
+                new FormInputOwnerTranslateItem(InputOwnerTranslateMode.Add, this, null);
+            inputTranslateItem.ShowDialog();
+        }
+
+        private void picBoxDeleteOwner_Click(object sender, EventArgs e)
+        {
+            DeleteOwnerTranslate();
+        }
+
+        private void picBoxEditOwner_Click(object sender, EventArgs e)
+        {
+            EditOwnerTranslate();
+        }
+
+        private void picBoxEditOwner_MouseDown(object sender, MouseEventArgs e)
+        {
+            PictureBox pbox = (PictureBox)sender;
+            pbox.BorderStyle = BorderStyle.Fixed3D;
+        }
+
+        private void picBoxEditOwner_MouseUp(object sender, MouseEventArgs e)
+        {
+            PictureBox pbox = (PictureBox)sender;
+            pbox.BorderStyle = BorderStyle.None;
+        }
+
+        private void picBoxEditOwner_EnabledChanged(object sender, EventArgs e)
+        {
+            PictureBox pbox = (PictureBox)sender;
+            if (pbox == picboxAddOwner)
+                pbox.Image = pbox.Enabled ? Properties.Resources.add_enabled : Properties.Resources.add_disabled;
+            else if (pbox == picBoxDeleteOwner)
+                pbox.Image = pbox.Enabled ? Properties.Resources.delete_enabled : Properties.Resources.delete_disabled;
+            else if (pbox == picBoxEditOwner)
+                pbox.Image = pbox.Enabled ? Properties.Resources.edit_enabled : Properties.Resources.edit_disabled;
+        }
+
+        private void picboxAddOwner_MouseLeave(object sender, EventArgs e)
+        {
+            PictureBox pbox = (PictureBox)sender;
+            pbox.BorderStyle = BorderStyle.None;
+        }
+
+        private void ColorInfoChange()
+        {
+             tboxColorInfo.Text = string.Format("RBG: A=[{0:D},{1:D},{2:D}], B=[{0:D},{1:D},{2:D}], C=[{3:D},{4:D},{5:D}], D=[{6:D},{7:D},{8:D}], E=[{9:D},{10:D},{11:D}]",
+                    previewPanelA.BackColor.R, previewPanelA.BackColor.G, previewPanelA.BackColor.B,
+                    previewPanelB.BackColor.R, previewPanelB.BackColor.G, previewPanelB.BackColor.B,
+                    previewPanelC.BackColor.R, previewPanelC.BackColor.G, previewPanelC.BackColor.B,
+                    previewPanelD.BackColor.R, previewPanelD.BackColor.G, previewPanelD.BackColor.B,
+                    previewPanelE.BackColor.R, previewPanelE.BackColor.G, previewPanelE.BackColor.B
+                    );
+        }
+
+        private void ChangeFontColor(Color color)
+        {
+            btnSelectColorFont.BackColor = color;
+            labelPanelA.ForeColor = color;
+            labelPanelB.ForeColor = color;
+            labelPanelC.ForeColor = color;
+            labelPanelD.ForeColor = color;
+            labelPanelE.ForeColor = color;
+        }
+
+        private void ChangeBackColor(Color color)
+        {
+            btnSelectBackColor.BackColor = color;
+            panelBackground.BackColor = color;
+        }
+
+        private void ChangeTheme(Theme t)
+        {
+            if (t != null)
+            {
+                btnSelectColorPanelA.BackColor =
+                   previewPanelA.BackColor = t.ColorA;
+
+                btnSelectColorPanelB.BackColor =
+                    previewPanelB.BackColor = t.ColorB;
+
+                btnSelectColorPanelC.BackColor =
+                    previewPanelC.BackColor = t.ColorC;
+
+                btnSelectColorPanelD.BackColor =
+                    previewPanelD.BackColor = t.ColorD;
+
+                btnSelectColorPanelE.BackColor =
+                   previewPanelE.BackColor = t.ColorE;
+
+                ChangeFontColor(t.FontColor);
+                ChangeBackColor(t.BackColor);
+                ColorInfoChange();
+            }
+        }
 
 
+        private void InitTabPageTheme()
+        {
+            comboxThemeList.Items.Clear();
+            comboxThemeList.Items.AddRange(ThemeManager.GetAllThemeNames());
+            comboxThemeList.Text = ThemeManager.CurrentTheme.Name;
+            ChangeTheme(ThemeManager.CurrentTheme);
+
+            btnSelectColorPanelA.Tag = previewPanelA;
+            btnSelectColorPanelB.Tag = previewPanelB;
+            btnSelectColorPanelC.Tag = previewPanelC;
+            btnSelectColorPanelD.Tag = previewPanelD;
+            btnSelectColorPanelE.Tag = previewPanelE;
+
+            previewPanelA.Tag = btnSelectColorPanelA;
+            previewPanelB.Tag = btnSelectColorPanelB;
+            previewPanelC.Tag = btnSelectColorPanelC;
+            previewPanelD.Tag = btnSelectColorPanelD;
+            previewPanelE.Tag = btnSelectColorPanelE;
+        }
+
+        private void btnSelectColorPanelA_Click(object sender, EventArgs e)
+        {
+            Control c = (Control)sender;
+            ColorDialog cd = new ColorDialog();
+            cd.Color = c.BackColor;
+            if (DialogResult.OK == cd.ShowDialog())
+            {
+                c.BackColor = cd.Color;
+                ((Control)(c.Tag)).BackColor = cd.Color;
+                ColorInfoChange();
+            }
+        }
+
+      
+        private void comboxThemeList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Theme theme = ThemeManager.GetTheme(comboxThemeList.Text);
+            ChangeTheme(theme);
+            if (m_generalEventHandle != null)
+                m_generalEventHandle.OnNotifyChangeTheme(theme);
+        }
+
+        private Theme CreateTheme(string name = null)
+        {
+            Theme theme = new Theme(null);
+            theme.ColorA = previewPanelA.BackColor;
+            theme.ColorB = previewPanelB.BackColor;
+            theme.ColorC = previewPanelC.BackColor;
+            theme.ColorD = previewPanelD.BackColor;
+            theme.ColorE = previewPanelE.BackColor;
+            theme.FontColor = btnSelectColorFont.BackColor;
+            theme.BackColor = btnSelectBackColor.BackColor;
+            return theme;
+        }
+
+        private Theme SaveTheme()
+        {
+            StringContainer strContainer = new StringContainer();
+            DialogResult result = new InputDialog().ShowDialog("Please type the theme name:", strContainer);
+            if (result != DialogResult.OK)
+                return null;
+
+            Theme theme = CreateTheme(strContainer.Value);
+            ThemeManager.AddTheme(theme);
+
+            comboxThemeList.Items.Clear();
+            comboxThemeList.Items.AddRange(ThemeManager.GetAllThemeNames());
+
+            return theme;
+        }
+
+        private void btnSaveTheme_Click(object sender, EventArgs e)
+        {
+            SaveTheme();
+        }
+
+        private void btnSaveApplyTheme_Click(object sender, EventArgs e)
+        {
+            Theme t = SaveTheme();
+            if (t != null)
+            {
+                ChangeTheme(t);
+                if (m_generalEventHandle != null)
+                    m_generalEventHandle.OnNotifyChangeTheme(t);
+            }
+        }
+
+        private void btnSelectColorFont_Click(object sender, EventArgs e)
+        {
+            Control c = (Control)sender;
+            ColorDialog cd = new ColorDialog();
+            cd.Color = c.BackColor;
+            if (DialogResult.OK == cd.ShowDialog())
+            {
+                c.BackColor = cd.Color;
+                ChangeFontColor(cd.Color);
+            }
+        }
+
+        private void btnSelectBackColor_Click(object sender, EventArgs e)
+        {
+            Control c = (Control)sender;
+            ColorDialog cd = new ColorDialog();
+            cd.Color = c.BackColor;
+            if (DialogResult.OK == cd.ShowDialog())
+            {
+                ChangeBackColor(cd.Color);
+            }
+        }
+
+        private void btnApplyTheme_Click(object sender, EventArgs e)
+        {
+            Theme theme = CreateTheme(null);
+            if (m_generalEventHandle != null)
+                m_generalEventHandle.OnNotifyChangeTheme(theme);
         }
     }
 }

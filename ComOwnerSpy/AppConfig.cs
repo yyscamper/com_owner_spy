@@ -10,7 +10,6 @@ namespace ComOwnerSpy
 {
     public static class AppConfig
     {
-        private static string[] _allSuspectProcessNames;
         private static bool _flagOwnerWithDomain;
         private static int _rowHeight;
         private static bool _enableAutoRefreshAtStartup;
@@ -24,11 +23,10 @@ namespace ComOwnerSpy
 
         public static void ResetDefault()
         {
-            _allSuspectProcessNames = new string[] { "SecureCRT", "ttermpro", "Multy-Term" };
             _flagOwnerWithDomain = true;
             _rowHeight = 24;
             _enableAutoRefreshAtStartup = true;
-            _autoRefreshInternval = 5;
+            _autoRefreshInternval = 10;
             _ownerShowFmt = OwnerShowFormat.Default;
         }
 
@@ -62,37 +60,6 @@ namespace ComOwnerSpy
             set { _flagOwnerWithDomain = value; }
         }
 
-        public static string[] AllSuspectProcessNames
-        {
-            get { return _allSuspectProcessNames; }
-            set { _allSuspectProcessNames = value; }
-        }
-
-        public static void AddSuspectProcessName(string name)
-        {
-            if (_allSuspectProcessNames.Contains(name))
-                return;
-
-            string[] newArr = new string[_allSuspectProcessNames.Length + 1];
-            Array.Copy(_allSuspectProcessNames, newArr, _allSuspectProcessNames.Length);
-            newArr[newArr.Length - 1] = name;
-        }
-
-        public static void RemoveSuspectProcessName(string name)
-        {
-            if (!_allSuspectProcessNames.Contains(name))
-                return;
-
-            string[] newArr = new string[_allSuspectProcessNames.Length - 1];
-            int j = 0;
-            for (int i = 0; i < _allSuspectProcessNames.Length; i++)
-            {
-                if (_allSuspectProcessNames[i] != name)
-                    newArr[j++] = _allSuspectProcessNames[i];
-            }
-            return;
-        }
-
         public static void LoadGlobalConfig()
         {
             string path = "config\\com_owner_spy_global.dat";
@@ -118,11 +85,6 @@ namespace ComOwnerSpy
                     //{
                     //    ComHandle.Add(new ComItem(p));
                     //}
-                }
-                else if (line.StartsWith("SuspectProcessNames:"))
-                {
-                    string[] names = line.Substring("SuspectProcessNames:".Length).Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    _allSuspectProcessNames = names;
                 }
                 else if (line.StartsWith("RowHeight:"))
                 {
@@ -185,8 +147,6 @@ namespace ComOwnerSpy
             }
             StreamWriter writer = new StreamWriter(path);
             writer.WriteLine("Version:" + Application.ProductVersion);
-            writer.WriteLine("Ports:" + string.Join(",", ComHandle.GetAllPorts()));
-            writer.WriteLine("SuspectProcessNames:" + string.Join(",", _allSuspectProcessNames));
             writer.WriteLine("RowHeight:" + _rowHeight.ToString());
             writer.WriteLine("EnableAutoRefreshAtStartup:" + _enableAutoRefreshAtStartup.ToString());
             writer.WriteLine("AutoRefreshInternval:" + _autoRefreshInternval.ToString());

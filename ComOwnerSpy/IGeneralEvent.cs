@@ -9,5 +9,7 @@ namespace ComOwnerSpy
     {
         void UpdateRowHeight(int rowHeight);
         void UpdateOwnerFormat(OwnerShowFormat fmt);
+
+        void OnNotifyChangeTheme(Theme newTheme);
     }
 }
