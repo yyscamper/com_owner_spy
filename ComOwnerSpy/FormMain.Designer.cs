@@ -39,12 +39,6 @@
             this.menuOwnerFormatFullName = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOwnerFormatShortName = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOwnerFormatPhone = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuSetRowHeight = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuRowHeightVeryLow = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuRowHeightLow = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuRowHeightNormal = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuRowHeightHigh = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuRowHeightVeryHigh = new System.Windows.Forms.ToolStripMenuItem();
             this.picBoxSelectAutoRefreshEnable = new System.Windows.Forms.PictureBox();
             this.picBoxSetting = new System.Windows.Forms.PictureBox();
             this.picBoxGotoPort = new System.Windows.Forms.PictureBox();
@@ -84,16 +78,18 @@
             this.listPortTable.TabIndex = 0;
             this.listPortTable.UseCompatibleStateImageBehavior = false;
             this.listPortTable.View = System.Windows.Forms.View.Details;
+            this.listPortTable.DoubleClick += new System.EventHandler(this.listPortTable_DoubleClick);
+            this.listPortTable.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listPortTable_KeyDown);
+            this.listPortTable.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listPortTable_KeyUp);
             // 
             // ctxMenuPortsTable
             // 
             this.ctxMenuPortsTable.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuKill,
             this.menuEnableAutoRefresh,
-            this.menuOwnerFormat,
-            this.menuSetRowHeight});
+            this.menuOwnerFormat});
             this.ctxMenuPortsTable.Name = "ctxMenuPortsTable";
-            this.ctxMenuPortsTable.Size = new System.Drawing.Size(160, 92);
+            this.ctxMenuPortsTable.Size = new System.Drawing.Size(160, 70);
             this.ctxMenuPortsTable.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuPortsTable_Opening);
             this.ctxMenuPortsTable.Click += new System.EventHandler(this.ctxMenuPortsTable_Click);
             // 
@@ -152,53 +148,6 @@
             this.menuOwnerFormatPhone.Size = new System.Drawing.Size(152, 22);
             this.menuOwnerFormatPhone.Text = "Phone";
             this.menuOwnerFormatPhone.Click += new System.EventHandler(this.menuEnableAutoRefresh_Click);
-            // 
-            // menuSetRowHeight
-            // 
-            this.menuSetRowHeight.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuRowHeightVeryLow,
-            this.menuRowHeightLow,
-            this.menuRowHeightNormal,
-            this.menuRowHeightHigh,
-            this.menuRowHeightVeryHigh});
-            this.menuSetRowHeight.Name = "menuSetRowHeight";
-            this.menuSetRowHeight.Size = new System.Drawing.Size(159, 22);
-            this.menuSetRowHeight.Text = "Row Height";
-            // 
-            // menuRowHeightVeryLow
-            // 
-            this.menuRowHeightVeryLow.Name = "menuRowHeightVeryLow";
-            this.menuRowHeightVeryLow.Size = new System.Drawing.Size(133, 22);
-            this.menuRowHeightVeryLow.Text = "Very Low";
-            this.menuRowHeightVeryLow.Click += new System.EventHandler(this.ctxMenuPortsTable_Click);
-            // 
-            // menuRowHeightLow
-            // 
-            this.menuRowHeightLow.Name = "menuRowHeightLow";
-            this.menuRowHeightLow.Size = new System.Drawing.Size(133, 22);
-            this.menuRowHeightLow.Text = "Low";
-            this.menuRowHeightLow.Click += new System.EventHandler(this.ctxMenuPortsTable_Click);
-            // 
-            // menuRowHeightNormal
-            // 
-            this.menuRowHeightNormal.Name = "menuRowHeightNormal";
-            this.menuRowHeightNormal.Size = new System.Drawing.Size(133, 22);
-            this.menuRowHeightNormal.Text = "Normal";
-            this.menuRowHeightNormal.Click += new System.EventHandler(this.ctxMenuPortsTable_Click);
-            // 
-            // menuRowHeightHigh
-            // 
-            this.menuRowHeightHigh.Name = "menuRowHeightHigh";
-            this.menuRowHeightHigh.Size = new System.Drawing.Size(133, 22);
-            this.menuRowHeightHigh.Text = "High";
-            this.menuRowHeightHigh.Click += new System.EventHandler(this.ctxMenuPortsTable_Click);
-            // 
-            // menuRowHeightVeryHigh
-            // 
-            this.menuRowHeightVeryHigh.Name = "menuRowHeightVeryHigh";
-            this.menuRowHeightVeryHigh.Size = new System.Drawing.Size(133, 22);
-            this.menuRowHeightVeryHigh.Text = "Very High";
-            this.menuRowHeightVeryHigh.Click += new System.EventHandler(this.ctxMenuPortsTable_Click);
             // 
             // picBoxSelectAutoRefreshEnable
             // 
@@ -418,12 +367,6 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabelRefreshConsumeTime;
         private System.Windows.Forms.PictureBox picBoxRefresh;
         private System.Windows.Forms.ToolStripMenuItem menuEnableAutoRefresh;
-        private System.Windows.Forms.ToolStripMenuItem menuSetRowHeight;
-        private System.Windows.Forms.ToolStripMenuItem menuRowHeightVeryLow;
-        private System.Windows.Forms.ToolStripMenuItem menuRowHeightLow;
-        private System.Windows.Forms.ToolStripMenuItem menuRowHeightNormal;
-        private System.Windows.Forms.ToolStripMenuItem menuRowHeightHigh;
-        private System.Windows.Forms.ToolStripMenuItem menuRowHeightVeryHigh;
         private System.Windows.Forms.ToolStripMenuItem menuOwnerFormat;
         private System.Windows.Forms.ToolStripMenuItem menuOwnerFormatDomainUser;
         private System.Windows.Forms.ToolStripMenuItem menuOwnerFormatFullName;

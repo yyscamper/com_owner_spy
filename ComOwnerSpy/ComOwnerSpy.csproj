@@ -89,6 +89,12 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="ComPortItem.cs" />
     <Compile Include="ComPortControlTable.cs" />
+    <Compile Include="ComPortShowDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComPortShowDialog.Designer.cs">
+      <DependentUpon>ComPortShowDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormInputOwnerTranslateItem.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,6 +151,9 @@
     <Compile Include="yMessageBox.Designer.cs">
       <DependentUpon>yMessageBox.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ComPortShowDialog.resx">
+      <DependentUpon>ComPortShowDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormInputOwnerTranslateItem.resx">
       <DependentUpon>FormInputOwnerTranslateItem.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +231,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\kill-enabled.png" />
+    <None Include="Resources\kill-disabled.png" />
     <None Include="Resources\switch_on_disabled.png" />
     <None Include="Resources\switch_off_disabled.png" />
     <None Include="Resources\switch_on.png" />

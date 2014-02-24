@@ -6,6 +6,7 @@ using System.Text;
 using System.IO;
 using System.IO.Ports;
 using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace ComOwnerSpy
 {
@@ -183,6 +184,76 @@ namespace ComOwnerSpy
             }
 
             return patternlist;
+        }
+
+        static public void RefreshAll()
+        {
+            ResetDetectedFlag();
+
+            //Get all processes that are opening serial port by utility "handle"
+            List<ProcessOwnInfo> listOwnProcesses =
+                HandleWrapper.GetAllOwnProcesses(ComPortControlTable.DeviceNamePatterns);
+            if (listOwnProcesses == null)
+                return;
+
+            //Usually, one process often opens more than one serial port, so here creats the dictionary
+            //to store the process that have known its owner, so as not to search process owner twice.
+            Dictionary<int, string> procOwnerTable = new Dictionary<int, string>(); //key: process ID; value: owner
+            foreach (ProcessOwnInfo pinfo in listOwnProcesses)
+            {
+                string owner = null;
+                string procName = null;
+
+                Application.DoEvents();
+
+                //here map the device name to serial port name
+                ComPortItem citem = ComPortControlTable.GetItemByDevieName(pinfo.DeviceName);
+                if (citem == null)
+                    continue;
+
+                //We have searched the process owner before, we just copy its result,
+                //so as not to search twice.
+                if (procOwnerTable.ContainsKey(pinfo.ProcessId))
+                {
+                    owner = procOwnerTable[pinfo.ProcessId];
+                }
+                else
+                {
+                    //We havn't searched the process owner before 
+                    string sid = null;
+                    owner = ProcessOwnerFinder.GetProcessOwnerByPID(pinfo.ProcessId, out sid);
+                    if (owner == null) //search owner failed
+                        continue;
+                    procOwnerTable.Add(pinfo.ProcessId, owner);
+                }
+
+                procName = pinfo.ProcessName;
+                //if the process name have suffix ".exe", we just remove it to have nice format data show to user.
+                int exeindex = pinfo.ProcessName.LastIndexOf(".exe");
+                if (exeindex > 0)
+                {
+                    procName = pinfo.ProcessName.Substring(0, exeindex); //remove the suffix ".exe"
+                }
+
+                //update the serial port info as we get all result.
+                if (citem.Update(owner, procName, pinfo.ProcessName + " (" + pinfo.ProcessId + ")", pinfo.ProcessId))
+                {
+                    citem.GuiItem.SubItems[1].Text = citem.FormatedOwner;
+                    citem.GuiItem.SubItems[2].Text = citem.OwnAppName;
+                    citem.GuiItem.SubItems[3].Text = citem.OwnDetailProcessInfo;
+                }
+                citem.DetectedFlag = true; //mark the serial port is detected be opened.
+            }
+
+            //handle other serial ports that is not opening, so reset the info to empty.
+            ComPortItem[] allItems = ComPortControlTable.AllItems;
+            foreach (ComPortItem item in allItems)
+            {
+                if (item.GuiItem != null && !item.DetectedFlag)
+                {
+                    item.ClearContent();
+                }
+            }
         }
     }
 }

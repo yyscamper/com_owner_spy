@@ -22,6 +22,7 @@ namespace ComOwnerSpy
         private Thread _autoRefreshThread = null;
         private Thread _launchRefreshOnceThread = null;
         private OptimizedCircularProgressControl _refreshProgressCtrl = null;
+        private bool _enableMouseWheelChangeRowHeight = false;
 
         /// <summary>
         /// Create row for each COM port and initialize it to empty except port name.
@@ -80,6 +81,8 @@ namespace ComOwnerSpy
             OnNotifyChangeTheme(ThemeManager.CurrentTheme);
 
             Control.CheckForIllegalCrossThreadCalls = false; //avoid multi-threads warning
+
+            listPortTable.MouseWheel += listPortTable_MouseWheel;
         }
 
         private void StartRefreshProgressView(string statusMessage)
@@ -193,83 +196,11 @@ namespace ComOwnerSpy
         private void RefreshAllComPorts()
         {
             DateTime timeBegin = DateTime.Now;
-            ComPortControlTable.ResetDetectedFlag();
-            
-            //Get all processes that are opening serial port by utility "handle"
-            List<ProcessOwnInfo> listOwnProcesses = 
-                HandleWrapper.GetAllOwnProcesses(ComPortControlTable.DeviceNamePatterns);
-            if (listOwnProcesses == null)
-                return;
-
-            TimeSpan tGetProcHandle = DateTime.Now - timeBegin;
-            DateTime tGetOwnerBegin = DateTime.Now;
-
-            //Usually, one process often opens more than one serial port, so here creats the dictionary
-            //to store the process that have known its owner, so as not to search process owner twice.
-            Dictionary<int, string> procOwnerTable = new Dictionary<int,string>(); //key: process ID; value: owner
-            foreach (ProcessOwnInfo pinfo in listOwnProcesses)
-            {
-                string owner = null;
-                string procName = null;
-
-                Application.DoEvents();
-
-                //here map the device name to serial port name
-                ComPortItem citem = ComPortControlTable.GetItemByDevieName(pinfo.DeviceName);
-                if (citem == null)
-                    continue;
-
-                //We have searched the process owner before, we just copy its result,
-                //so as not to search twice.
-                if (procOwnerTable.ContainsKey(pinfo.ProcessId)) 
-                {
-                    owner = procOwnerTable[pinfo.ProcessId];
-                }
-                else
-                {
-                    //We havn't searched the process owner before 
-                    string sid = null;
-                    owner = ProcessOwnerFinder.GetProcessOwnerByPID(pinfo.ProcessId, out sid);
-                    if (owner == null) //search owner failed
-                        continue;
-                    procOwnerTable.Add(pinfo.ProcessId, owner);
-                }
-
-                procName = pinfo.ProcessName;
-                //if the process name have suffix ".exe", we just remove it to have nice format data show to user.
-                int exeindex = pinfo.ProcessName.LastIndexOf(".exe");
-                if (exeindex > 0)
-                {
-                    procName = pinfo.ProcessName.Substring(0, exeindex); //remove the suffix ".exe"
-                }
-
-                //update the serial port info as we get all result.
-                if (citem.Update(owner, procName, pinfo.ProcessName + " (" + pinfo.ProcessId + ")", pinfo.ProcessId))
-                {
-                    citem.GuiItem.SubItems[1].Text = citem.FormatedOwner;
-                    citem.GuiItem.SubItems[2].Text = citem.OwnAppName;
-                    citem.GuiItem.SubItems[3].Text = citem.OwnDetailProcessInfo;
-                }
-                citem.DetectedFlag = true; //mark the serial port is detected be opened.
-            }
-
-            TimeSpan tGetOwn = DateTime.Now - tGetOwnerBegin;
-
-            //handle other serial ports that is not opening, so reset the info to empty.
-            ComPortItem[] allItems = ComPortControlTable.AllItems;
-            foreach (ComPortItem item in allItems)
-            {
-                if (item.GuiItem != null && !item.DetectedFlag)
-                {
-                    item.ClearContent();
-                }
-            }
-
+            ComPortControlTable.RefreshAll();
             DateTime timeEnd = DateTime.Now;
-            TimeSpan timeConsume = timeEnd - timeBegin;
+            TimeSpan timeConsume = DateTime.Now - timeBegin;
             statusLabelRefreshTime.Text = string.Format("Last Refresh @{0:D2}:{1:D2}:{2:D2},", timeEnd.Hour, timeEnd.Minute, timeEnd.Second);
-            statusLabelRefreshConsumeTime.Text = string.Format(" Consumes {0:F1} sec ([P]{1:D}ms + [O]{2:D}ms)", timeConsume.TotalSeconds,
-                        (long)tGetProcHandle.TotalMilliseconds, (long)tGetOwn.TotalMilliseconds);
+            statusLabelRefreshConsumeTime.Text = string.Format(" Consumes {0:F1}", timeConsume.TotalSeconds);
         }
 
         /// <summary>
@@ -599,6 +530,8 @@ namespace ComOwnerSpy
         {
             if (newTheme != null)
             {
+                ThemeManager.CurrentTheme = newTheme;
+
                 this.BackColor = newTheme.BackColor;
                 panelA.BackColor = newTheme.ColorA;
                 panelB.BackColor = newTheme.ColorB;
@@ -613,6 +546,44 @@ namespace ComOwnerSpy
 
                 this.ForeColor = newTheme.FontColor;
             }
+        }
+
+        void listPortTable_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (!_enableMouseWheelChangeRowHeight)
+                return;
+
+            int val = listPortTable.SmallImageList.ImageSize.Height;
+            if (e.Delta > 0 && val < listPortTable.Height)
+                val++;
+            else if (e.Delta < 0 && val > 1)
+                val--;
+            else
+                return;
+            UpdateRowHeight(val);
+        }
+
+        private void listPortTable_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control)
+                _enableMouseWheelChangeRowHeight = true;
+        }
+
+        private void listPortTable_KeyUp(object sender, KeyEventArgs e)
+        {
+            _enableMouseWheelChangeRowHeight = false;
+        }
+
+        private void listPortTable_DoubleClick(object sender, EventArgs e)
+        {
+            if (listPortTable.SelectedIndices.Count <= 0)
+                return;
+            string portName = listPortTable.SelectedItems[0].Text;
+            ComPortItem item = ComPortControlTable.GetItemByPortName(portName);
+            if (item == null || item.OwnProcessId < 0 || item.OwnUser == null)
+                return;
+
+            new ComPortShowDialog(item).ShowDialog();
         }
     }
 }

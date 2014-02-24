@@ -203,6 +203,26 @@ namespace ComOwnerSpy.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap kill_disabled {
+            get {
+                object obj = ResourceManager.GetObject("kill_disabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap kill_enabled {
+            get {
+                object obj = ResourceManager.GetObject("kill_enabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap pic_app {
             get {
                 object obj = ResourceManager.GetObject("pic_app", resourceCulture);
