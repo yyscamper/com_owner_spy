@@ -15,7 +15,7 @@ namespace ComOwnerSpy
         private static bool _enableAutoRefreshAtStartup;
         private static int _autoRefreshInternval;
         private static OwnerShowFormat _ownerShowFmt;
-
+        private static string _curThemeName;
         static AppConfig()
         {
             ResetDefault();
@@ -27,7 +27,8 @@ namespace ComOwnerSpy
             _rowHeight = 24;
             _enableAutoRefreshAtStartup = true;
             _autoRefreshInternval = 10;
-            _ownerShowFmt = OwnerShowFormat.Default;
+            _ownerShowFmt = OwnerShowFormat.FullName;
+            _curThemeName = "default";
         }
 
         public static OwnerShowFormat OwnerFormat
@@ -36,13 +37,18 @@ namespace ComOwnerSpy
             set { _ownerShowFmt = value; }
         }
 
+        public static String CurrentThemeName
+        {
+            get { return _curThemeName; }
+            set { _curThemeName = value; }
+        }
         public static int AutoRefreshInterval
         {
             get { return _autoRefreshInternval; }
             set { _autoRefreshInternval = value; }
         }
 
-        public static bool EnableAutoRefreshAtStartup
+        public static bool EnableAutoRefresh
         {
             get { return _enableAutoRefreshAtStartup; }
             set { _enableAutoRefreshAtStartup = value; }
@@ -131,6 +137,11 @@ namespace ComOwnerSpy
                     string str = line.Substring("OwnerShowFormat:".Length);
                     _ownerShowFmt = Utility.ParseOwnerShowFormat(str);
                 }
+                else if (line.StartsWith("CurrentThemeName:"))
+                {
+                    string str = line.Substring("CurrentThemeName:".Length);
+                    _curThemeName = str;
+                }
                 else if (line.StartsWith("#End Data#"))
                     break; //end of config file
             }
@@ -151,9 +162,10 @@ namespace ComOwnerSpy
             writer.WriteLine("EnableAutoRefreshAtStartup:" + _enableAutoRefreshAtStartup.ToString());
             writer.WriteLine("AutoRefreshInternval:" + _autoRefreshInternval.ToString());
             writer.WriteLine("OwnerShowFormat:" + _ownerShowFmt.ToString().ToLower());
+            writer.WriteLine("CurrentThemeName:" + (_curThemeName == null ? "default" : _curThemeName));
             writer.WriteLine("#End Data#");
             writer.Flush();
-            writer.Close();
+            writer.Close();  
         }
     }
 }

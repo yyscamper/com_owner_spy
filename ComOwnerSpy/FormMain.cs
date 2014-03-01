@@ -23,7 +23,9 @@ namespace ComOwnerSpy
         private Thread _launchRefreshOnceThread = null;
         private OptimizedCircularProgressControl _refreshProgressCtrl = null;
         private bool _enableMouseWheelChangeRowHeight = false;
-
+        private bool _originAutoRefreshEnable = false;
+        private int _originRefreshInterval = 10;
+        private OwnerShowFormat _originOwnerShowFmt = AppConfig.OwnerFormat;
         /// <summary>
         /// Create row for each COM port and initialize it to empty except port name.
         /// </summary>
@@ -61,6 +63,10 @@ namespace ComOwnerSpy
 
             Version appVer = new Version(Application.ProductVersion);
             this.Text = "COM Owner Spy (" + appVer.Major + "." + appVer.Minor + ")";
+            numUpDownInterval.Value = AppConfig.AutoRefreshInterval;
+
+            _originAutoRefreshEnable = AppConfig.EnableAutoRefresh;
+            _originRefreshInterval = AppConfig.AutoRefreshInterval;
 
             //initiate the COM port table
             listPortTable.Columns.Add("Port", 100);
@@ -74,6 +80,10 @@ namespace ComOwnerSpy
             listPortTable.GridLines = true;
             UpdateRowHeight(24);
             CreateRows();
+            UpdateOwnerFormat(AppConfig.OwnerFormat);
+
+            picBoxRefresh.Enabled = labelManulRefresh.Enabled = AppConfig.EnableAutoRefresh;
+            picBoxRefresh.Enabled = labelManulRefresh.Enabled = !AppConfig.EnableAutoRefresh; //trigger the callback
 
             //the size should be set after the listPortTable initialization, because this will
             //trigger the callback of Form_Resize and cause crash.
@@ -97,6 +107,7 @@ namespace ComOwnerSpy
             _refreshProgressCtrl = new OptimizedCircularProgressControl();
             _refreshProgressCtrl.Dock = DockStyle.Fill;
             _refreshProgressCtrl.StartAngle = 30;
+            _refreshProgressCtrl.BackColor = Color.Transparent;
             listPortTable.Controls.Add(_refreshProgressCtrl);
             _refreshProgressCtrl.TickColor = this.ForeColor;
             _refreshProgressCtrl.Start();
@@ -153,9 +164,7 @@ namespace ComOwnerSpy
         /// <param name="e"></param>
         private void FormMain_Load(object sender, EventArgs e)
         {      
-            picBoxRefresh.Enabled = AppConfig.EnableAutoRefreshAtStartup;
-            menuEnableAutoRefresh.Checked = AppConfig.EnableAutoRefreshAtStartup;
-
+            menuEnableAutoRefresh.Checked = AppConfig.EnableAutoRefresh;
             StartBackgroundRefreshOnceTask("First scanning");
             AutoRefreshChanged(true);
         }
@@ -164,6 +173,7 @@ namespace ComOwnerSpy
         {
             bool isAutoRefreshSelected = newState;
             picBoxRefresh.Enabled = !isAutoRefreshSelected;
+            labelManulRefresh.Enabled = picBoxRefresh.Enabled;
 
             if (isAutoRefreshSelected) //if auto refresh task is enabled
             {
@@ -209,11 +219,13 @@ namespace ComOwnerSpy
         private void RunAutoRefreshTask()
         {
             WaitBackgroundRefreshOnceTaskStopped();
+            picBoxRefresh.Enabled = !AppConfig.EnableAutoRefresh;
+            labelManulRefresh.Enabled = picBoxRefresh.Enabled;
 
             TimeSpan tspan;
             while (true)
             {
-                if (!AppConfig.EnableAutoRefreshAtStartup)
+                if (!AppConfig.EnableAutoRefresh)
                     return;
 
                 Application.DoEvents();
@@ -223,7 +235,7 @@ namespace ComOwnerSpy
 
                 do
                 {
-                    if (!AppConfig.EnableAutoRefreshAtStartup)
+                    if (!AppConfig.EnableAutoRefresh)
                         return;
 
                     tspan = DateTime.Now - tnow;
@@ -234,13 +246,13 @@ namespace ComOwnerSpy
 
         private void FormMain_Resize(object sender, EventArgs e)
         {
-            listPortTable.Width = this.Width - 32;
-            listPortTable.Height = this.Height - panelD.Height - 58 - theStatusBar.Height;
-            panelD.Width = listPortTable.Width - panelD.Location.X + 5;
+            listPortTable.Width = this.Width - 30;
+            listPortTable.Height = this.Height - panelD.Height - 52 - theStatusBar.Height;
+            panelD.Width = listPortTable.Width - panelD.Location.X + 7;
 
             //set the width of the last column
             int tmp = this.Width - listPortTable.Columns[0].Width
-               - listPortTable.Columns[1].Width - listPortTable.Columns[2].Width - 62;
+               - listPortTable.Columns[1].Width - listPortTable.Columns[2].Width - 41;
             if (tmp < 180)
                 tmp = 180;
             listPortTable.Columns[listPortTable.Columns.Count - 1].Width = tmp;
@@ -250,46 +262,12 @@ namespace ComOwnerSpy
         {
             if (listPortTable.SelectedIndices.Count <= 0)
                 return;
-
-            string strPort = listPortTable.SelectedItems[0].SubItems[0].Text;
-            ComPortItem item = ComPortControlTable.GetItemByPortName(strPort);
-            if (item == null || item.OwnProcessId <= 0)
+            string portName = listPortTable.SelectedItems[0].Text;
+            ComPortItem item = ComPortControlTable.GetItemByPortName(portName);
+            if (item == null || item.OwnProcessId < 0 || item.OwnUser == null)
                 return;
 
-            //Get other serial ports that the same process is opening.
-            List<ComPortItem> otherPortsInSameProc = ComPortControlTable.GetOtherPortsInSameProcess(item);
-
-            //think first time
-            if (DialogResult.Yes == yMessageBox.ShowKillProcConfirm(item, otherPortsInSameProc,
-                this, "Confirm Kill Process"))
-            {
-                //think twice
-                if (DialogResult.Yes == yMessageBox.ShowKillProcConfirm(item, otherPortsInSameProc,
-                    this, "Confirm Kill Process"))
-                {
-                    try
-                    {
-                        Process proc = Process.GetProcessById(item.OwnProcessId);
-                        if (proc == null)
-                            return;
-
-                        proc.Kill();
-
-                        //update the UI, clear the content of the row
-                        item.ClearContent();
-
-                        foreach (ComPortItem p in otherPortsInSameProc)
-                        {
-                            p.ClearContent();
-                        }
-                    }
-                    catch (Exception err)
-                    {
-                       yMessageBox.ShowError(this, "Kill process error, error message:" + System.Environment.NewLine + err.Message,
-                            "Error Kill Process");
-                    }
-                }
-            }
+            new ComPortShowDialog(item).ShowDialog(); 
         }
 
         private void ctxMenuPortsTable_Opening(object sender, CancelEventArgs e)
@@ -311,7 +289,7 @@ namespace ComOwnerSpy
 
             menuKill.Visible = true;
 
-            menuEnableAutoRefresh.Checked = AppConfig.EnableAutoRefreshAtStartup;
+            menuEnableAutoRefresh.Checked = AppConfig.EnableAutoRefresh;
             menuOwnerFormatDomainUser.Checked = (AppConfig.OwnerFormat == OwnerShowFormat.DomainUser);
             menuOwnerFormatFullName.Checked = (AppConfig.OwnerFormat == OwnerShowFormat.FullName);
             menuOwnerFormatShortName.Checked = (AppConfig.OwnerFormat == OwnerShowFormat.ShortName 
@@ -324,6 +302,13 @@ namespace ComOwnerSpy
             //abort the background thread before closing this program.
             if (_autoRefreshThread != null && _autoRefreshThread.IsAlive)
                 _autoRefreshThread.Abort();
+
+            if (_originRefreshInterval != AppConfig.AutoRefreshInterval
+                || _originAutoRefreshEnable != AppConfig.EnableAutoRefresh
+                || _originOwnerShowFmt != AppConfig.OwnerFormat)
+            {
+                AppConfig.SaveGlobalConfig();
+            }
         }
 
         private void btnGotoPort_Click(object sender, EventArgs e)
@@ -479,9 +464,9 @@ namespace ComOwnerSpy
 
         private void picBoxSelectAutoRefreshEnable_Click(object sender, EventArgs e)
         {
-            AppConfig.EnableAutoRefreshAtStartup = !AppConfig.EnableAutoRefreshAtStartup;
-            AutoRefreshChanged(AppConfig.EnableAutoRefreshAtStartup);
-            if (AppConfig.EnableAutoRefreshAtStartup)
+            AppConfig.EnableAutoRefresh = !AppConfig.EnableAutoRefresh;
+            AutoRefreshChanged(AppConfig.EnableAutoRefresh);
+            if (AppConfig.EnableAutoRefresh)
                 picBoxSelectAutoRefreshEnable.Image = Properties.Resources.switch_on;
             else
                 picBoxSelectAutoRefreshEnable.Image = Properties.Resources.switch_off;
@@ -492,12 +477,12 @@ namespace ComOwnerSpy
             PictureBox pbox = (PictureBox)sender;
             if (pbox.Enabled)
             {
-                pbox.Image = (AppConfig.EnableAutoRefreshAtStartup ? 
+                pbox.Image = (AppConfig.EnableAutoRefresh ? 
                     Properties.Resources.switch_on : Properties.Resources.switch_off);
             }
             else
             {
-                pbox.Image = (AppConfig.EnableAutoRefreshAtStartup ?
+                pbox.Image = (AppConfig.EnableAutoRefresh ?
                     Properties.Resources.switch_on_disabled : Properties.Resources.switch_off_disabled);
             }
         }
@@ -584,6 +569,11 @@ namespace ComOwnerSpy
                 return;
 
             new ComPortShowDialog(item).ShowDialog();
+        }
+
+        private void numUpDownInterval_ValueChanged(object sender, EventArgs e)
+        {
+            AppConfig.AutoRefreshInterval = (int)numUpDownInterval.Value;
         }
     }
 }

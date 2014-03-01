@@ -14,6 +14,8 @@ namespace ComOwnerSpy
     {
         private ComPortItem _selPort = null;
 
+        Dictionary<int, List<ComPortItem>> _allOwnerProcess = null;
+
         public ComPortShowDialog(ComPortItem selPort)
         {
             InitializeComponent();
@@ -21,13 +23,13 @@ namespace ComOwnerSpy
             Theme theme = ThemeManager.CurrentTheme;
             this.BackColor = theme.BackColor;
             panelUp.BackColor = theme.ColorA;
-            panelDown.BackColor = theme.BackColor;
-            listViewAllOwnProcs.BackColor = theme.ColorC;
+            listViewAllOwnProcs.BackColor = theme.ColorE;
             foreach (Control c in this.Controls)
                 c.ForeColor = theme.FontColor;
             listViewAllOwnProcs.ForeColor = theme.FontColor;
 
             _selPort = selPort;
+            AutoSizeUIComponent();
 
             RefreshUIData();
         }
@@ -35,9 +37,12 @@ namespace ComOwnerSpy
         private void RefreshUIData()
         {
             labelSelectPortName.Text = _selPort.PortName;
-            labelOwnerName.Text = _selPort.FormatedOwner;
+            labelOwnerName.Text = OwnerTranslate.GetOwnerShow(OwnerShowFormat.FullName, _selPort.OwnUser)
+                        + " (" + _selPort.OwnUser + ", Phone:"
+                        + OwnerTranslate.GetOwnerShow(OwnerShowFormat.Phone, _selPort.OwnUser)
+                        + ")";
 
-            Dictionary<int, List<ComPortItem>> allOwnerProcs = new Dictionary<int, List<ComPortItem>>();
+            _allOwnerProcess = new Dictionary<int, List<ComPortItem>>();
             ComPortItem[] allItems = ComPortControlTable.AllItems;
             foreach (ComPortItem item in allItems)
             {
@@ -46,24 +51,24 @@ namespace ComOwnerSpy
 
                 if (item.OwnUser == _selPort.OwnUser)
                 {
-                    if (allOwnerProcs.ContainsKey(item.OwnProcessId))
+                    if (_allOwnerProcess.ContainsKey(item.OwnProcessId))
                     {
-                        List<ComPortItem> lst = allOwnerProcs[item.OwnProcessId];
+                        List<ComPortItem> lst = _allOwnerProcess[item.OwnProcessId];
                         lst.Add(item);
                     }
                     else
                     {
                         List<ComPortItem> lst = new List<ComPortItem>();
                         lst.Add(item);
-                        allOwnerProcs.Add(item.OwnProcessId, lst);
+                        _allOwnerProcess.Add(item.OwnProcessId, lst);
                     }
                 }
             }
 
             listViewAllOwnProcs.Items.Clear();
-            foreach (int key in allOwnerProcs.Keys)
+            foreach (int key in _allOwnerProcess.Keys)
             {
-                List<ComPortItem> lst = allOwnerProcs[key];
+                List<ComPortItem> lst = _allOwnerProcess[key];
                 StringBuilder stext = new StringBuilder();
                 string appName = null;
                 bool fst = true;
@@ -80,6 +85,9 @@ namespace ComOwnerSpy
                     }
                     stext.Append(item.PortName);
                 }
+
+                AutoSizeLastColumnWidth();
+
                 ListViewItem lvi = new ListViewItem(new string[] { key.ToString(), appName, stext.ToString() });
                 lvi.Tag = key;
                 listViewAllOwnProcs.Items.Add(lvi);
@@ -113,11 +121,9 @@ namespace ComOwnerSpy
 
         private void picBoxKill_Click(object sender, EventArgs e)
         {
-            StringBuilder stext = new StringBuilder();
-            stext.Append("Are you sure want to kill your selected processes?");
-            if (DialogResult.Yes == yMessageBox.ShowConfirm(this, stext.ToString(), "Confirm Kill Processes"))
+            if (DialogResult.Yes == yMessageBox.ShowKillProcConfirm(listViewAllOwnProcs.CheckedItems.Count, this, "Confirm Kill Process"))
             {
-                 if (DialogResult.Yes == yMessageBox.ShowConfirm(this, stext.ToString(), "Confirm Kill Processes"))
+                if (DialogResult.Yes == yMessageBox.ShowKillProcConfirm(listViewAllOwnProcs.CheckedItems.Count, this, "Confirm Kill Process"))
                  {
                      foreach (ListViewItem lvi in listViewAllOwnProcs.CheckedItems)
                      {
@@ -127,6 +133,17 @@ namespace ComOwnerSpy
                              if (proc != null)
                              {
                                  proc.Kill();
+
+                                 List<ComPortItem> lstItem = _allOwnerProcess[(int)lvi.Tag];
+                                 foreach (ComPortItem comItem in lstItem)
+                                 {
+                                     comItem.Update(string.Empty, string.Empty, string.Empty, ComPortItem.INVALID_PROCESS_ID);
+                                     if (comItem.GuiItem != null)
+                                     {
+                                         for (int i = 1; i < comItem.GuiItem.SubItems.Count; i++)
+                                             comItem.GuiItem.SubItems[i].Text = string.Empty;
+                                     }
+                                 }
                              }
                          }
                          catch (Exception err)
@@ -173,6 +190,35 @@ namespace ComOwnerSpy
                 if ((int)listViewAllOwnProcs.Items[e.Index].Tag == _selPort.OwnProcessId)
                     e.NewValue = e.CurrentValue;
             }
+        }
+
+        private void AutoSizeUIComponent()
+        {
+            listViewAllOwnProcs.Width = this.Width - 29;
+            listViewAllOwnProcs.Height = this.Height - panelUp.Height - 77;
+            panelUp.Width = picBoxKill.Location.X - 13;
+
+            AutoSizeLastColumnWidth();
+        }
+
+        private void AutoSizeLastColumnWidth()
+        {           
+            Graphics gf = this.CreateGraphics();
+            int maxFontWidth = 0;
+            foreach (ListViewItem lvi in listViewAllOwnProcs.Items)
+            {
+                int w = (int)gf.MeasureString(lvi.SubItems[2].Text, listViewAllOwnProcs.Font).Width;
+                if (w > maxFontWidth)
+                    maxFontWidth = w;
+            }
+            maxFontWidth += 6;
+            int calWidth = listViewAllOwnProcs.Width - colPID.Width - colAppName.Width - 8;
+            colOpenedPorts.Width = maxFontWidth > calWidth ? maxFontWidth : calWidth;
+        }
+
+        private void ComPortShowDialog_Resize(object sender, EventArgs e)
+        {
+            AutoSizeUIComponent();
         }
 
     }

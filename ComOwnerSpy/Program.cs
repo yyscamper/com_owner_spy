@@ -20,7 +20,6 @@ namespace ComOwnerSpy
             //build "Device Map" from registry
             try
             {
-                ThemeManager.Init();
                 ComPortControlTable.InitTable(); 
             }
             catch (Exception err)
@@ -32,8 +31,9 @@ namespace ComOwnerSpy
             //load config file
             try
             {
-                OwnerTranslate.LoadFromFile("config\\owner_translate.dat");
+                OwnerTranslate.LoadFromFile();
                 AppConfig.LoadGlobalConfig();
+                ThemeManager.Init();
             }
             catch //if config file has error, just ignore it, we will use the default setting
             {

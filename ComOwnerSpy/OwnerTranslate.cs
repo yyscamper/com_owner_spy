@@ -132,7 +132,7 @@ namespace ComOwnerSpy
     static class OwnerTranslate
     {
         private static SortedDictionary<string, OwnerEntry> _allOwners = new SortedDictionary<string, OwnerEntry>();
-
+        private static readonly string _path = "config\\owner_translate.dat";
         public static string GetOwnerShow(OwnerShowFormat fmt, string domainuser)
         {
             if (fmt == OwnerShowFormat.Default)
@@ -199,12 +199,12 @@ namespace ComOwnerSpy
                 return null;
         }
 
-        public static void LoadFromFile(string path)
+        public static void LoadFromFile()
         {
             StreamReader fs = null;
             try
             {
-                fs = File.OpenText(path);
+                fs = File.OpenText(_path);
                 fs.ReadLine(); //version number
                 _allOwners.Clear();
                 while (!fs.EndOfStream)
@@ -234,7 +234,7 @@ namespace ComOwnerSpy
             }
         }
 
-        public static void SaveToFile(string path)
+        public static void SaveToFile()
         {
             if (_allOwners == null)
                 return;
@@ -243,7 +243,7 @@ namespace ComOwnerSpy
 
             try
             {
-                fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write);
+                fs = File.Open(_path, FileMode.OpenOrCreate, FileAccess.Write);
                 byte[] verdata = Encoding.UTF8.GetBytes("version=1.0" + System.Environment.NewLine);
                 fs.Write(verdata, 0, verdata.Length);
                 foreach (OwnerEntry owner in _allOwners.Values)

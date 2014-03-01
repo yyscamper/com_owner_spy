@@ -50,6 +50,9 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelRefreshConsumeTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelA = new System.Windows.Forms.Panel();
+            this.numUpDownInterval = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.labelManulRefresh = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panelB = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
@@ -62,20 +65,21 @@
             ((System.ComponentModel.ISupportInitialize)(this.picBoxGotoPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBoxRefresh)).BeginInit();
             this.panelA.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numUpDownInterval)).BeginInit();
             this.panelB.SuspendLayout();
             this.panelC.SuspendLayout();
             this.SuspendLayout();
             // 
             // listPortTable
             // 
-            this.listPortTable.BackColor = System.Drawing.Color.LightBlue;
-            this.listPortTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listPortTable.BackColor = System.Drawing.SystemColors.Window;
+            this.listPortTable.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listPortTable.ContextMenuStrip = this.ctxMenuPortsTable;
-            this.listPortTable.Location = new System.Drawing.Point(7, 92);
+            this.listPortTable.Location = new System.Drawing.Point(7, 66);
             this.listPortTable.Margin = new System.Windows.Forms.Padding(4);
             this.listPortTable.Name = "listPortTable";
-            this.listPortTable.Size = new System.Drawing.Size(784, 454);
-            this.listPortTable.TabIndex = 0;
+            this.listPortTable.Size = new System.Drawing.Size(784, 476);
+            this.listPortTable.TabIndex = 4;
             this.listPortTable.UseCompatibleStateImageBehavior = false;
             this.listPortTable.View = System.Windows.Forms.View.Details;
             this.listPortTable.DoubleClick += new System.EventHandler(this.listPortTable_DoubleClick);
@@ -152,9 +156,9 @@
             // picBoxSelectAutoRefreshEnable
             // 
             this.picBoxSelectAutoRefreshEnable.Image = global::ComOwnerSpy.Properties.Resources.switch_on;
-            this.picBoxSelectAutoRefreshEnable.Location = new System.Drawing.Point(12, 21);
+            this.picBoxSelectAutoRefreshEnable.Location = new System.Drawing.Point(7, 3);
             this.picBoxSelectAutoRefreshEnable.Name = "picBoxSelectAutoRefreshEnable";
-            this.picBoxSelectAutoRefreshEnable.Size = new System.Drawing.Size(70, 32);
+            this.picBoxSelectAutoRefreshEnable.Size = new System.Drawing.Size(57, 30);
             this.picBoxSelectAutoRefreshEnable.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picBoxSelectAutoRefreshEnable.TabIndex = 6;
             this.picBoxSelectAutoRefreshEnable.TabStop = false;
@@ -164,9 +168,9 @@
             // picBoxSetting
             // 
             this.picBoxSetting.Image = global::ComOwnerSpy.Properties.Resources.setting;
-            this.picBoxSetting.Location = new System.Drawing.Point(7, 1);
+            this.picBoxSetting.Location = new System.Drawing.Point(8, 2);
             this.picBoxSetting.Name = "picBoxSetting";
-            this.picBoxSetting.Size = new System.Drawing.Size(54, 54);
+            this.picBoxSetting.Size = new System.Drawing.Size(32, 32);
             this.picBoxSetting.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picBoxSetting.TabIndex = 5;
             this.picBoxSetting.TabStop = false;
@@ -181,9 +185,9 @@
             // picBoxGotoPort
             // 
             this.picBoxGotoPort.Image = global::ComOwnerSpy.Properties.Resources._goto;
-            this.picBoxGotoPort.Location = new System.Drawing.Point(101, 10);
+            this.picBoxGotoPort.Location = new System.Drawing.Point(99, 2);
             this.picBoxGotoPort.Name = "picBoxGotoPort";
-            this.picBoxGotoPort.Size = new System.Drawing.Size(54, 54);
+            this.picBoxGotoPort.Size = new System.Drawing.Size(32, 32);
             this.picBoxGotoPort.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picBoxGotoPort.TabIndex = 5;
             this.picBoxGotoPort.TabStop = false;
@@ -198,9 +202,9 @@
             // picBoxRefresh
             // 
             this.picBoxRefresh.Image = global::ComOwnerSpy.Properties.Resources.refresh_enabled;
-            this.picBoxRefresh.Location = new System.Drawing.Point(89, 10);
+            this.picBoxRefresh.Location = new System.Drawing.Point(170, 2);
             this.picBoxRefresh.Name = "picBoxRefresh";
-            this.picBoxRefresh.Size = new System.Drawing.Size(54, 54);
+            this.picBoxRefresh.Size = new System.Drawing.Size(32, 32);
             this.picBoxRefresh.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picBoxRefresh.TabIndex = 5;
             this.picBoxRefresh.TabStop = false;
@@ -215,10 +219,10 @@
             // comboBoxGotoPort
             // 
             this.comboBoxGotoPort.FormattingEnabled = true;
-            this.comboBoxGotoPort.Location = new System.Drawing.Point(5, 25);
+            this.comboBoxGotoPort.Location = new System.Drawing.Point(4, 6);
             this.comboBoxGotoPort.Name = "comboBoxGotoPort";
-            this.comboBoxGotoPort.Size = new System.Drawing.Size(92, 25);
-            this.comboBoxGotoPort.TabIndex = 2;
+            this.comboBoxGotoPort.Size = new System.Drawing.Size(90, 25);
+            this.comboBoxGotoPort.TabIndex = 0;
             this.comboBoxGotoPort.SelectedIndexChanged += new System.EventHandler(this.comboBoxJumpPort_SelectedIndexChanged);
             // 
             // theStatusBar
@@ -253,39 +257,87 @@
             // 
             // panelA
             // 
-            this.panelA.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.panelA.BackColor = System.Drawing.SystemColors.Control;
+            this.panelA.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelA.Controls.Add(this.numUpDownInterval);
+            this.panelA.Controls.Add(this.label1);
+            this.panelA.Controls.Add(this.labelManulRefresh);
             this.panelA.Controls.Add(this.label2);
             this.panelA.Controls.Add(this.picBoxSelectAutoRefreshEnable);
             this.panelA.Controls.Add(this.picBoxRefresh);
             this.panelA.Location = new System.Drawing.Point(7, 5);
             this.panelA.Name = "panelA";
-            this.panelA.Size = new System.Drawing.Size(149, 75);
-            this.panelA.TabIndex = 5;
+            this.panelA.Size = new System.Drawing.Size(215, 56);
+            this.panelA.TabIndex = 1;
+            // 
+            // numUpDownInterval
+            // 
+            this.numUpDownInterval.Location = new System.Drawing.Point(80, 7);
+            this.numUpDownInterval.Maximum = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.numUpDownInterval.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numUpDownInterval.Name = "numUpDownInterval";
+            this.numUpDownInterval.Size = new System.Drawing.Size(65, 23);
+            this.numUpDownInterval.TabIndex = 0;
+            this.numUpDownInterval.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numUpDownInterval.ValueChanged += new System.EventHandler(this.numUpDownInterval_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(71, 35);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(83, 17);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Interval (Sec)";
+            // 
+            // labelManulRefresh
+            // 
+            this.labelManulRefresh.AutoSize = true;
+            this.labelManulRefresh.Location = new System.Drawing.Point(160, 35);
+            this.labelManulRefresh.Name = "labelManulRefresh";
+            this.labelManulRefresh.Size = new System.Drawing.Size(52, 17);
+            this.labelManulRefresh.TabIndex = 10;
+            this.labelManulRefresh.Text = "Refresh";
+            this.labelManulRefresh.Click += new System.EventHandler(this.picBoxRefresh_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 56);
+            this.label2.Location = new System.Drawing.Point(18, 35);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(83, 17);
+            this.label2.Size = new System.Drawing.Size(35, 17);
             this.label2.TabIndex = 10;
-            this.label2.Text = "Auto Refresh";
+            this.label2.Text = "Auto";
+            this.label2.Click += new System.EventHandler(this.picBoxSelectAutoRefreshEnable_Click);
             // 
             // panelB
             // 
-            this.panelB.BackColor = System.Drawing.Color.PaleGreen;
+            this.panelB.BackColor = System.Drawing.SystemColors.Control;
+            this.panelB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelB.Controls.Add(this.label4);
             this.panelB.Controls.Add(this.picBoxGotoPort);
             this.panelB.Controls.Add(this.comboBoxGotoPort);
-            this.panelB.Location = new System.Drawing.Point(166, 5);
+            this.panelB.Location = new System.Drawing.Point(228, 5);
             this.panelB.Name = "panelB";
-            this.panelB.Size = new System.Drawing.Size(161, 75);
-            this.panelB.TabIndex = 6;
+            this.panelB.Size = new System.Drawing.Size(140, 56);
+            this.panelB.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 53);
+            this.label4.Location = new System.Drawing.Point(15, 35);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(69, 17);
             this.label4.TabIndex = 9;
@@ -293,29 +345,32 @@
             // 
             // panelC
             // 
-            this.panelC.BackColor = System.Drawing.Color.Orange;
+            this.panelC.BackColor = System.Drawing.SystemColors.Control;
+            this.panelC.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelC.Controls.Add(this.label3);
             this.panelC.Controls.Add(this.picBoxSetting);
-            this.panelC.Location = new System.Drawing.Point(337, 5);
+            this.panelC.Location = new System.Drawing.Point(374, 5);
             this.panelC.Name = "panelC";
-            this.panelC.Size = new System.Drawing.Size(66, 75);
-            this.panelC.TabIndex = 7;
+            this.panelC.Size = new System.Drawing.Size(51, 56);
+            this.panelC.TabIndex = 3;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 55);
+            this.label3.Location = new System.Drawing.Point(0, 35);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(48, 17);
             this.label3.TabIndex = 8;
             this.label3.Text = "Setting";
+            this.label3.Click += new System.EventHandler(this.picBoxSetting_Click);
             // 
             // panelD
             // 
-            this.panelD.BackColor = System.Drawing.Color.Khaki;
-            this.panelD.Location = new System.Drawing.Point(415, 5);
+            this.panelD.BackColor = System.Drawing.SystemColors.Control;
+            this.panelD.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelD.Location = new System.Drawing.Point(431, 5);
             this.panelD.Name = "panelD";
-            this.panelD.Size = new System.Drawing.Size(376, 75);
+            this.panelD.Size = new System.Drawing.Size(360, 56);
             this.panelD.TabIndex = 8;
             // 
             // FormMain
@@ -345,6 +400,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picBoxRefresh)).EndInit();
             this.panelA.ResumeLayout(false);
             this.panelA.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numUpDownInterval)).EndInit();
             this.panelB.ResumeLayout(false);
             this.panelB.PerformLayout();
             this.panelC.ResumeLayout(false);
@@ -382,6 +438,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel panelD;
+        private System.Windows.Forms.NumericUpDown numUpDownInterval;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelManulRefresh;
     }
 }
 

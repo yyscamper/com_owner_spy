@@ -14,7 +14,7 @@ namespace ComOwnerSpy
     {       
         private IGeneralEvent m_generalEventHandle = null;
         private OwnerEntry m_selectedOwner = null;
- 
+        private string m_originCurThemeName = null;
         //private bool m_hasDoneSave = false;
 
         #region form_action
@@ -24,8 +24,8 @@ namespace ComOwnerSpy
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterParent;
             this.Icon = Properties.Resources.setting_icon;
+            m_originCurThemeName = AppConfig.CurrentThemeName;
 
-            InitTabGeneral();
             InitTabComPort();
             InitTabPatterns();
             InitTabAbout();
@@ -36,6 +36,11 @@ namespace ComOwnerSpy
             m_generalEventHandle = eventHandle;
         }
 
+        private void SetTheme(Theme theme)
+        {
+
+        }
+
         private void FormSetting_Load(object sender, EventArgs e)
         {
 
@@ -43,27 +48,6 @@ namespace ComOwnerSpy
 
         #endregion
 
-        #region tabGeneral
-
-        private void InitTabGeneral()
-        {
-            comboBoxRowHeight.Items.Clear();
-            for (uint val = 10; val <= 48; val++)
-            {
-                comboBoxRowHeight.Items.Add(val.ToString());
-            }
-            comboBoxRowHeight.Text = AppConfig.RowHeight.ToString();
-
-            upDownRefreshInterval.Minimum = 1;
-            upDownRefreshInterval.Maximum = 300;
-            upDownRefreshInterval.Value = AppConfig.AutoRefreshInterval;
-            cboxEnableAutoRefreshAtStartup.Checked = AppConfig.EnableAutoRefreshAtStartup;
-            upDownRefreshInterval.Enabled = cboxEnableAutoRefreshAtStartup.Checked;
-            comboxBoxOwnerShowFormat.SelectedIndex = (int)AppConfig.OwnerFormat;
-            this.upDownRefreshInterval.ValueChanged += new System.EventHandler(this.upDownRefreshInterval_ValueChanged);
-        }
-
-        #endregion
 
         #region tabCOMPorts
 
@@ -79,11 +63,6 @@ namespace ComOwnerSpy
             {
                 lboxPatterns.Items.Add(s);
             }
-        }
-
-        private void SaveTabSuspectProc()
-        {
-            return;
         }
 
         #endregion
@@ -192,7 +171,7 @@ namespace ComOwnerSpy
             }
             string key = listViewOwnerTranslate.SelectedItems[0].SubItems[0].Text;
             OwnerTranslate.Remove(key);
-
+            OwnerTranslate.SaveToFile();
             RefreshTabOwnerTranslate();
         }
 
@@ -211,7 +190,6 @@ namespace ComOwnerSpy
 
         private void SaveOwnerTranslate()
         {
-            OwnerTranslate.SaveToFile("config\\owner_translate.dat");
         }
 
         #endregion
@@ -220,10 +198,8 @@ namespace ComOwnerSpy
 
         private void Save()
         {
-            AppConfig.EnableAutoRefreshAtStartup = cboxEnableAutoRefreshAtStartup.Enabled;
-            AppConfig.AutoRefreshInterval = (int)upDownRefreshInterval.Value;
-            SaveTabSuspectProc();
-            SaveOwnerTranslate();
+            if (m_originCurThemeName != comboxThemeList.Text)
+                AppConfig.SaveGlobalConfig();
         }
 
 
@@ -236,45 +212,9 @@ namespace ComOwnerSpy
 
         #endregion
 
-        private void comboBoxRowHeight_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (m_generalEventHandle != null)
-                m_generalEventHandle.UpdateRowHeight(int.Parse(comboBoxRowHeight.Text));
-        }
-
-        private void comboBoxOwnerShowFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            AppConfig.OwnerFormat = (OwnerShowFormat)comboxBoxOwnerShowFormat.SelectedIndex;
-            if (m_generalEventHandle != null)
-                m_generalEventHandle.UpdateOwnerFormat(AppConfig.OwnerFormat);
-        }
-
         private void FormSetting_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //if (!m_hasDoneSave && DialogResult.No == yMessageBox.ShowConfirm(this, "Are you sure want to close? If so, all modification will be discared."))
-            //{
-            //    e.Cancel = true;
-            //}
-
             Save();
-        }
-
-        private void cboxEnableAutoRefreshAtStartup_CheckedChanged(object sender, EventArgs e)
-        {
-            upDownRefreshInterval.Enabled = cboxEnableAutoRefreshAtStartup.Checked;
-            AppConfig.EnableAutoRefreshAtStartup = cboxEnableAutoRefreshAtStartup.Checked;
-        }
-
-        private void upDownRefreshInterval_ValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                int val = int.Parse(upDownRefreshInterval.Value.ToString());
-                AppConfig.AutoRefreshInterval = val;
-            }
-            catch
-            {
-            }
         }
 
         private void EditOwnerTranslate()
@@ -304,6 +244,8 @@ namespace ComOwnerSpy
                 OwnerTranslate.Add(owner);
                 RefreshTabOwnerTranslate();
                 SelectOwnerTranslateVisuable(owner.DomainUser);
+
+                OwnerTranslate.SaveToFile();
             }
             else
             {
@@ -313,6 +255,8 @@ namespace ComOwnerSpy
                     OwnerTranslate.Add(owner);
                     RefreshTabOwnerTranslate();
                     SelectOwnerTranslateVisuable(owner.DomainUser);
+
+                    OwnerTranslate.SaveToFile();
                 }
             }
         }
@@ -363,17 +307,6 @@ namespace ComOwnerSpy
             pbox.BorderStyle = BorderStyle.None;
         }
 
-        private void ColorInfoChange()
-        {
-             tboxColorInfo.Text = string.Format("RBG: A=[{0:D},{1:D},{2:D}], B=[{0:D},{1:D},{2:D}], C=[{3:D},{4:D},{5:D}], D=[{6:D},{7:D},{8:D}], E=[{9:D},{10:D},{11:D}]",
-                    previewPanelA.BackColor.R, previewPanelA.BackColor.G, previewPanelA.BackColor.B,
-                    previewPanelB.BackColor.R, previewPanelB.BackColor.G, previewPanelB.BackColor.B,
-                    previewPanelC.BackColor.R, previewPanelC.BackColor.G, previewPanelC.BackColor.B,
-                    previewPanelD.BackColor.R, previewPanelD.BackColor.G, previewPanelD.BackColor.B,
-                    previewPanelE.BackColor.R, previewPanelE.BackColor.G, previewPanelE.BackColor.B
-                    );
-        }
-
         private void ChangeFontColor(Color color)
         {
             btnSelectColorFont.BackColor = color;
@@ -411,7 +344,6 @@ namespace ComOwnerSpy
 
                 ChangeFontColor(t.FontColor);
                 ChangeBackColor(t.BackColor);
-                ColorInfoChange();
             }
         }
 
@@ -445,7 +377,6 @@ namespace ComOwnerSpy
             {
                 c.BackColor = cd.Color;
                 ((Control)(c.Tag)).BackColor = cd.Color;
-                ColorInfoChange();
             }
         }
 
@@ -456,11 +387,13 @@ namespace ComOwnerSpy
             ChangeTheme(theme);
             if (m_generalEventHandle != null)
                 m_generalEventHandle.OnNotifyChangeTheme(theme);
+
+            SetTheme(theme);
         }
 
         private Theme CreateTheme(string name = null)
         {
-            Theme theme = new Theme(null);
+            Theme theme = new Theme(name);
             theme.ColorA = previewPanelA.BackColor;
             theme.ColorB = previewPanelB.BackColor;
             theme.ColorC = previewPanelC.BackColor;
@@ -478,11 +411,19 @@ namespace ComOwnerSpy
             if (result != DialogResult.OK)
                 return null;
 
+            if (ThemeManager.Contains(strContainer.Value))
+            {
+                yMessageBox.ShowError(this, "Your input theme name is already existed, please type another one!", "Error");
+                return null;
+            }
+
             Theme theme = CreateTheme(strContainer.Value);
             ThemeManager.AddTheme(theme);
+            ThemeManager.SaveThemeToFile();
 
             comboxThemeList.Items.Clear();
             comboxThemeList.Items.AddRange(ThemeManager.GetAllThemeNames());
+            comboxThemeList.Text = AppConfig.CurrentThemeName;
 
             return theme;
         }
@@ -528,9 +469,32 @@ namespace ComOwnerSpy
 
         private void btnApplyTheme_Click(object sender, EventArgs e)
         {
-            Theme theme = CreateTheme(null);
-            if (m_generalEventHandle != null)
-                m_generalEventHandle.OnNotifyChangeTheme(theme);
+            Theme theme = SaveTheme();
+            if (theme == null)
+                return;
+            comboxThemeList.Text = theme.Name;
+            comboxThemeList_SelectedIndexChanged(comboxThemeList, null);
+            SetTheme(theme);
+        }
+
+        private void btnDeleteCurrentTheme_Click(object sender, EventArgs e)
+        {
+            if (DialogResult.Yes != yMessageBox.ShowConfirm(this, "Are you sure want to remove this theme?", "Remove Theme"))
+            {
+                return;
+            }
+            ThemeManager.RemoveTheme(comboxThemeList.Text);
+            ThemeManager.CurrentTheme = ThemeManager.GetDefaultTheme();
+
+            comboxThemeList.Items.Clear();
+            comboxThemeList.Items.AddRange(ThemeManager.GetAllThemeNames());
+
+            comboxThemeList.Text = ThemeManager.CurrentTheme.Name;
+        }
+
+        private void comboxThemeList_TextChanged(object sender, EventArgs e)
+        {
+            comboxThemeList_SelectedIndexChanged(comboxThemeList, null);
         }
     }
 }

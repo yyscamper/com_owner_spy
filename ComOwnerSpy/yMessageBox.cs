@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace ComOwnerSpy
 {
-    public partial  class yMessageBox : Form
+    public partial class yMessageBox : Form
     {
         static Font regularFont = new Font("Microsoft Yahei", 10.0f, FontStyle.Regular);
         static Font highlightFont = new Font("Microsoft Yahei", 11.0f, FontStyle.Bold);
@@ -86,14 +86,13 @@ namespace ComOwnerSpy
 
         }
 
-        public static DialogResult Show (
-                Control parent = null, 
+        public static DialogResult Show(
+                Control parent = null,
                 string msg = "",
-                string title = "MessageBox", 
-                MessageBoxButtons btns = MessageBoxButtons.OK, 
+                string title = "MessageBox",
+                MessageBoxButtons btns = MessageBoxButtons.OK,
                 MessageBoxIcon icon = MessageBoxIcon.None
             )
-
         {
             return new yMessageBox(parent, msg, title, btns, icon).ShowDialog();
         }
@@ -168,9 +167,13 @@ namespace ComOwnerSpy
         {
         }
 
+        public RichTextBox RichInputControl
+        {
+            get { return richBoxMessage; }
+        }
+
         public static DialogResult ShowKillProcConfirm(
-               ComPortItem item,
-               List<ComPortItem> otherPortsInProcess,
+               int procCount,
                Control parent = null,
                string title = "Confirm",
                MessageBoxButtons btns = MessageBoxButtons.YesNo,
@@ -178,80 +181,37 @@ namespace ComOwnerSpy
            )
         {
             yMessageBox msgBox = new yMessageBox(parent, string.Empty, title, btns, icon);
-
-            if (otherPortsInProcess == null || otherPortsInProcess.Count == 0)
+            msgBox.RichInputControl.ForeColor = Color.Red;
+            if (procCount > 1)
             {
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText("Are you sure want to ");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Red;
-                msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText("KILL");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText(" the port ");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Red;
-                msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText(item.PortName);
-
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText("?");
+                msgBox.RichInputControl.Text = ("Are you sure want to KILL your selected processes?"
+                    + System.Environment.NewLine
+                    + "All COM ports that opened by the processes will be closed!");
             }
             else
             {
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText("Are you sure want to ");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Red;
-                msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText("KILL");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText(" the port ");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Red;
-                msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText(item.PortName);
-
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText("?" + System.Environment.NewLine);
-                msgBox.richBoxMessage.AppendText("The following port" + (otherPortsInProcess.Count > 1 ? "s" : string.Empty) + " will also be ");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Red;
-                msgBox.richBoxMessage.SelectionFont = highlightFont;
-                msgBox.richBoxMessage.AppendText("KILLED");
-
-                msgBox.richBoxMessage.SelectionColor = Color.Black;
-                msgBox.richBoxMessage.SelectionFont = regularFont;
-                msgBox.richBoxMessage.AppendText(" as they are opened in the same process:"
-                    + System.Environment.NewLine);
-
-
-                msgBox.richBoxMessage.SelectionFont = highlightFont;
-                for (int i = 0; i < otherPortsInProcess.Count; i++ )
-                {
-                    msgBox.richBoxMessage.SelectionColor = Color.Red;
-                    msgBox.richBoxMessage.AppendText(((ComPortItem)otherPortsInProcess[i]).PortName);
-
-                    msgBox.richBoxMessage.SelectionColor = Color.Black;
-                    if (i != otherPortsInProcess.Count - 1)
-                    {
-                        msgBox.richBoxMessage.AppendText(",");
-                    }
-                    else
-                    {
-                        msgBox.richBoxMessage.AppendText("!");
-                    }
-                }
+                msgBox.RichInputControl.Text = ("Are you sure want to KILL your selected process?" + System.Environment.NewLine
+                    + "All COM ports that opened by the process will be closed!");
             }
 
+            /*msgBox.RichInputControl.SelectionColor = Color.Black;
+            msgBox.RichInputControl.SelectionFont = regularFont;
+            msgBox.RichInputControl.AppendText("Are you sure want to ");
+
+            msgBox.RichInputControl.SelectionColor = Color.Red;
+            msgBox.RichInputControl.SelectionFont = highlightFont;
+            msgBox.RichInputControl.AppendText("KILL");
+
+            msgBox.RichInputControl.SelectionColor = Color.Black;
+            msgBox.RichInputControl.SelectionFont = regularFont;
+            msgBox.RichInputControl.AppendText(" your selected process");
+
+            if (procCount > 1)
+            {
+                msgBox.RichInputControl.AppendText("es");
+            }
+            msgBox.RichInputControl.AppendText("?");
+            */
             return msgBox.ShowDialog();
         }
     }
