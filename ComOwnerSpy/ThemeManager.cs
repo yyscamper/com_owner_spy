@@ -291,7 +291,7 @@ namespace ComOwnerSpy
                 _themeTable = new SortedDictionary<string, Theme>();
 
             StreamReader fs = null;
-            /*
+            
             try
             {
                 fs = File.OpenText(_path);
@@ -334,7 +334,7 @@ namespace ComOwnerSpy
                 if (fs != null)
                     fs.Close();
             }
-            */
+            
             if (_themeTable.Count <= 0)
                 CreateDefaultThemes();
 

@@ -246,8 +246,8 @@ namespace ComOwnerSpy
 
         private void FormMain_Resize(object sender, EventArgs e)
         {
-            listPortTable.Width = this.Width - 30;
-            listPortTable.Height = this.Height - panelD.Height - 52 - theStatusBar.Height;
+            listPortTable.Width = this.Width - 23;
+            listPortTable.Height = this.Height - panelD.Height - 46 - theStatusBar.Height;
             panelD.Width = listPortTable.Width - panelD.Location.X + 7;
 
             //set the width of the last column

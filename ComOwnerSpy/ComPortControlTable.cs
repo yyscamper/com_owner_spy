@@ -221,7 +221,8 @@ namespace ComOwnerSpy
                 {
                     //We havn't searched the process owner before 
                     string sid = null;
-                    owner = ProcessOwnerFinder.GetProcessOwnerByPID(pinfo.ProcessId, out sid);
+                    owner = Utility.GetProcessOwner(pinfo.ProcessId, true);
+                    //owner = ProcessOwnerFinderWmi.GetProcessOwnerByPID(pinfo.ProcessId, out sid);
                     if (owner == null) //search owner failed
                         continue;
                     procOwnerTable.Add(pinfo.ProcessId, owner);

@@ -53,7 +53,7 @@ namespace ComOwnerSpy
                     if (ownerWithDomain)
                         return argList[1] + "\\" + argList[0]; // return DOMAIN\user
                     else
-                        return argList[0];
+                        return argList[1];
                 }
             }
 
@@ -83,9 +83,9 @@ namespace ComOwnerSpy
                     {
                         try
                         {
-                            //string owner = Utility.GetProcessOwner(proc.Id);
-                            string sid = null;
-                            string owner = ProcessOwnerFinder.GetProcessOwnerByPID(proc.Id, out sid);
+                            string owner = Utility.GetProcessOwner(proc.Id);
+                            //string sid = null;
+                            //string owner = ProcessOwnerFinderWmi.GetProcessOwnerByPID(proc.Id, out sid);
                             if (allSecureCrtProcess.Contains(proc))
                                 appName = "SecureCRT";
                             else if (allTeraTermProcess.Contains(proc))

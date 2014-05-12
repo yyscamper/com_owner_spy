@@ -12,6 +12,55 @@ using System.Diagnostics;
 
 namespace ComOwnerSpy
 {
+    public static class ProcessOwnerFinderWmi
+    {
+        public static string GetProcessOwnerByPID(int PID, out string SID)//, out string OwnerSID)
+        {
+            StringBuilder sb = new StringBuilder();
+            string processname = String.Empty;
+            SID = string.Empty;
+            try
+            {
+                ObjectQuery sq = new ObjectQuery
+                    ("Select * from Win32_Process Where ProcessID = '" + PID + "'");
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher(sq);
+                if (searcher.Get().Count == 0)
+                    return string.Empty;
+                foreach (ManagementObject oReturn in searcher.Get())
+                {
+                    string[] o = new String[2];
+                    //Invoke the method and populate the o var with the user name and domain
+                    oReturn.InvokeMethod("GetOwner", (object[])o);
+
+                    //int pid = (int)oReturn["ProcessID"];
+                    processname = (string)oReturn["Name"];
+                    //dr[2] = oReturn["Description"];
+                    String User = o[0];
+                    if (User == null)
+                        User = String.Empty;
+                    else
+                        sb.Append(User);
+
+                    String Domain = o[1];
+                    if (Domain == null)
+                        Domain = String.Empty;
+                    else
+                        sb.Append("\\" + Domain);
+
+                    string[] sid = new String[1];
+                    oReturn.InvokeMethod("GetOwnerSid", (object[])sid);
+                    SID = sid[0];
+                    return sb.ToString();
+                }
+            }
+            catch
+            {
+                return string.Empty;
+            }
+            return string.Empty;
+        }
+    }
+
     public static class ProcessOwnerFinder
     {
         public const int NO_ERROR = 0;
