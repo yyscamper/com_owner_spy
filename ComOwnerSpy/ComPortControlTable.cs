@@ -138,7 +138,11 @@ namespace ComOwnerSpy
                 try
                 {
                     uint port = uint.Parse(val.Substring("COM".Length)); //extract the port integer number, remove "COM" prefix
-                    portTable.Add(port, name);
+
+                    string handleName = name.ToLower();
+                    if (!handleName.StartsWith("\\device\\"))
+                        handleName = "\\device\\" + handleName;
+                    portTable.Add(port, handleName);
                 }
                 catch
                 {
@@ -167,8 +171,8 @@ namespace ComOwnerSpy
 
             foreach (string str in _tableByDeviceName.Keys)
             {
-                if (!str.StartsWith("\\Device\\"))
-                    continue;
+                //if (!str.StartsWith("\\Device\\"))
+                //    continue;
 
                 int n = str.Length - 1;
                 while (n >= 0 && str[n] >= '0' && str[n] <= '9')

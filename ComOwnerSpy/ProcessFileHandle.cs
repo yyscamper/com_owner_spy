@@ -157,7 +157,7 @@ namespace ComOwnerSpy
                     continue;
                 }
 
-                ProcessOwnInfo phi = new ProcessOwnInfo(rowItems[0], procId, rowItems[6]);
+                ProcessOwnInfo phi = new ProcessOwnInfo(rowItems[0], procId, rowItems[6].ToLower());
                 listInfo.Add(phi);
             }
 
